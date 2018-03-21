@@ -18,6 +18,7 @@ exports.cssLoaders = function (options) {
   const cssLoader = {
     loader: 'css-loader',
     options: {
+      minimize: process.env.NODE_ENV === 'production',
       sourceMap: options.sourceMap
     }
   }
@@ -47,7 +48,8 @@ exports.cssLoaders = function (options) {
     if (options.extract) {
       return ExtractTextPlugin.extract({
         use: loaders,
-        fallback: 'vue-style-loader'
+        fallback: 'vue-style-loader',
+        publicPath:"../../" // webpack+vuecli打包生成资源相对引用路径与背景图片的正确引用 --20171011 [https://segmentfault.com/a/1190000011000543]
       })
     } else {
       return ['vue-style-loader'].concat(loaders)
