@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="v-home">
     <v-header></v-header>
     <template v-if="$route.meta.keep">
       <keep-alive></keep-alive>
@@ -24,3 +24,6 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+@import '../../../static/scss/global.scss';
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div class="v-footer"></div>
 </template>
 <script>
 export default {
