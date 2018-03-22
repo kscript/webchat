@@ -27,6 +27,39 @@ const router = new Router({
             requireAuth: false
           },
           component: resolve => require(['../components/pages/Message/index.vue'], resolve)
+        },
+        {
+          path: '/Post',
+          name: 'Post',
+          meta: {
+            keep: false,
+            name: 'Post',
+            type: 'page',
+            requireAuth: false
+          },
+          component: resolve => require(['../components/pages/Post/index.vue'], resolve)
+        },
+        {
+          path: '/Setting',
+          name: 'Setting',
+          meta: {
+            keep: false,
+            name: 'Setting',
+            type: 'page',
+            requireAuth: false
+          },
+          component: resolve => require(['../components/pages/Setting/index.vue'], resolve)
+        },
+        {
+          path: '/Customer',
+          name: 'Customer',
+          meta: {
+            keep: false,
+            name: 'Customer',
+            type: 'page',
+            requireAuth: false
+          },
+          component: resolve => require(['../components/pages/Customer/index.vue'], resolve)
         }
       ]
     }

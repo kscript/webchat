@@ -1,5 +1,5 @@
 <template>
-  <el-footer></el-footer>
+  <el-aside></el-aside>
 </template>
 <script>
 export default {

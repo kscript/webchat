@@ -1,18 +1,22 @@
 <template>
-  <div class="v-home">
+  <el-container direction="vertical">
     <v-header></v-header>
-    <template v-if="$route.meta.keep">
-      <keep-alive></keep-alive>
-    </template>
-    <template v-else>
-      <router-view></router-view>
-    </template>
+    <v-aside></v-aside>
+    <el-main>
+      <template v-if="$route.meta.keep">
+        <keep-alive></keep-alive>
+      </template>
+      <template v-else>
+        <router-view></router-view>
+      </template>
+    </el-main>
     <v-footer></v-footer>
-  </div>
+  </el-container>
 </template>
 <script>
 import header from './header.vue'
 import footer from './footer.vue'
+import aside from './aside.vue'
 export default {
   data () {
     return {
@@ -20,6 +24,7 @@ export default {
   },
   components: {
     'v-header': header,
+    'v-aside': aside,
     'v-footer': footer
   }
 }

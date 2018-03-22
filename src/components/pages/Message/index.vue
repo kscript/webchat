@@ -1,37 +1,102 @@
 <template>
   <div class="message">
-    <el-row :gutter="10">
-      <el-col :lg="3" :md="4" :sm="6" :xs="8">
-
-        <el-select class="full" v-model="status.selected">
-          <el-option
-            v-for="item in status.list"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-
+    <el-row type="flex" :gutter="10">
+      <el-col :span="8">
+        <el-row type="flex" justify="space-between" :gutter="10">
+          <el-col :span="8">
+            <el-select class="full" v-model="status.selected" size="mini">
+              <el-option
+                v-for="item in status.list"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="8">
+            <el-select class="full" v-model="assign.selected" size="mini">
+              <el-option
+                v-for="item in assign.list"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="8">
+            <el-select class="full" v-model="type.selected" size="mini">
+              <el-option
+                v-for="item in type.list"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-col>
+        </el-row>
       </el-col>
-      <el-col :lg="3" :md="4" :sm="6" :xs="8">
-
-        <el-select class="full" v-model="type.selected">
-          <el-option
-            v-for="item in type.list"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-
+      <el-col :span="12">
+        <span class="cust-gutter">
+          <el-radio-group v-model="classify.selected" size="mini">
+            <el-radio-button v-for="vo in classify.list" :label="vo.value" :key="vo.value">{{vo.label}}</el-radio-button>
+          </el-radio-group>
+        </span>
+        <span class="cust-gutter">
+          <el-button size="mini">批量完成</el-button>
+        </span>
+        <span class="cust-gutter">
+          <el-switch
+            class="cust-switch-label"
+            v-model="assign.active"
+            active-color="#13ce66"
+            inactive-color="#ccc"
+            :active-value="1"
+            :inactive-value="0"
+            :inactive-text="assign.label">
+          </el-switch>
+        </span>
       </el-col>
     </el-row>
+    <div class="message-list">
+
+    </div>
+    <div class="message-detail">
+
+    </div>
   </div>
 </template>
 <script>
 export default {
   data () {
     return {
+      classify: {
+        selected: 0,
+        list: [
+          {
+            value: 0,
+            label: '粉丝数量'
+          },
+          {
+            value: 1,
+            label: '交互时间'
+          }
+        ]
+      },
+      assign: {
+        active: 1,
+        label: '指派给我',
+        selected: 0,
+        list: [
+          {
+            value: 0,
+            label: '全部指派'
+          },
+          {
+            value: 1,
+            label: '我的'
+          }
+        ]
+      },
       status: {
         selected: 0,
         list: [
@@ -90,3 +155,17 @@ export default {
   }
 }
 </script>
+<style>
+.cust-gutter{
+  padding-left: 3px;
+  padding-right: 3px;
+}
+.cust-switch-label .el-switch__label span{
+  color: #666;
+  font-size: 12px;
+}
+.el-radio-button--mini .el-radio-button__inner{
+  padding-left: 10px;
+  padding-right: 10px;
+}
+</style>
