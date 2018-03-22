@@ -2,7 +2,7 @@ import axios from 'axios'
 import qs from 'qs'
 
 let $axios = axios.create({
-  baseURL: '/',
+  // baseURL: 'v1', // 配置了proxyTable后不需要再使用baseURL
   timeout: 15000,
   transformRequest: [function (data) {
     if (data instanceof FormData) {

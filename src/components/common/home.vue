@@ -34,4 +34,7 @@ export default {
 </script>
 <style lang="scss">
 @import '../../../static/scss/global.scss';
+.el-main{
+  padding: 0px 20px;
+}
 </style>

@@ -150,6 +150,11 @@ export default {
 }
 </script>
 <style>
+.message-head{
+  padding: 15px 15px;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #e4e7ed;
+}
 .cust-gutter{
   padding-left: 3px;
   padding-right: 3px;
