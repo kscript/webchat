@@ -1,5 +1,5 @@
 <template>
-  <div class="customer">
+  <div class="message-list">
   </div>
 </template>
 <script>

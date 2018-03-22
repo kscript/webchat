@@ -17,6 +17,7 @@
 import header from './header.vue'
 import footer from './footer.vue'
 import aside from './aside.vue'
+// import store from '../../store'
 export default {
   data () {
     return {
@@ -26,6 +27,8 @@ export default {
     'v-header': header,
     'v-aside': aside,
     'v-footer': footer
+  },
+  created () {
   }
 }
 </script>

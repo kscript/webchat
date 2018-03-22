@@ -6,6 +6,18 @@ import router from './router'
 import elementUI from 'element-ui'
 
 Vue.use(elementUI)
+var eventBus = {
+  install (Vue, options) {
+    Vue.prototype.$bus = new Vue({
+      data () {
+        return {
+          evs: []
+        }
+      }
+    })
+  }
+}
+Vue.use(eventBus)
 
 Vue.config.productionTip = false
 
