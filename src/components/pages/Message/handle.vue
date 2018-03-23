@@ -49,8 +49,6 @@ export default {
 }
 .handle-list .collapse-box{
   height: 100%;
-  border: 1px solid #e4e7ed;
-  border-top: none;
 }
 .handle-list .el-collapse{
   padding: 10px;

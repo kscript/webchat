@@ -72,14 +72,11 @@ export default {
 }
 .user-list .scroll-box{
   height: 100%;
-  overflow: hidden; /* 隐藏滚动条右侧 */
   border: 1px solid #e4e7ed;
   border-top: none;
-  border-right: 2px solid #f1f1f1; /* 给滚动条添加右侧边框 */
+  border-right: none;
 }
 .user-list .scroll-box .scroll{
-  margin: -14px -10px -14px 0; /* 隐藏上下三角 */
-  padding: 14px 0;
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -88,9 +85,9 @@ export default {
   margin-bottom: -1px;
 }
 .user-list .el-pagination{
-  border: 1px solid #e4e7ed;
+  /*border: 1px solid #e4e7ed;
   border-top: none;
-  border-right: none;
+  border-right: none;*/
 }
 .user-list{
   z-index: 120;
