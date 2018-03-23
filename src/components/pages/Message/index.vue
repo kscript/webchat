@@ -3,7 +3,7 @@
     <v-messagehead></v-messagehead>
     <div class="message-main cust-fix">
       <v-messagelist :users="users" @selectUser="selectUser"></v-messagelist>
-      <v-messagedetail :detail="detail" :messages="messages"></v-messagedetail>
+      <v-messagedetail :detail="detail" :messages="messages" :emotions="emotions"></v-messagedetail>
       <v-messagehandle :users="users" :detail="detail"></v-messagehandle>
     </div>
   </div>
@@ -19,7 +19,8 @@ export default {
     return {
       users: [],
       messages: [],
-      detail: {}
+      detail: {},
+      emotions: {}
     }
   },
   components: {
@@ -32,6 +33,21 @@ export default {
     selectUser (vo) {
       this.getMessageList(vo)
     },
+    getEmotions () {
+      let self = this
+      self.$axios({
+        url: 'v1/emotions',
+        method: 'GET',
+        data: {
+          category: '默认'
+        }
+      }).then(response => {
+        self.emotions['default'] = {
+          label: '默认',
+          list: response.data.result
+        }
+      })
+    },
     getMessageList (vo) {
       let self = this
       self.detail = vo
@@ -42,7 +58,7 @@ export default {
         data: {
           id: vo.id
         }
-      }).then((response) => {
+      }).then(response => {
         self.messages = response.data.result.reverse()
       })
     },
@@ -51,14 +67,16 @@ export default {
       self.$axios({
         url: 'v1/users',
         method: 'GET'
-      }).then((response) => {
+      }).then(response => {
         self.users = response.data.result
         self.getMessageList(self.users[0])
       })
+      self.getEmotions()
     }
   },
   created () {
     this.init()
+    window.vm = this
   }
 }
 </script>

@@ -23,8 +23,9 @@
         <div class="scroll-box cust-fix">
           <div class=" scroll">
             <ul class="content-list">
-            <li class="li-item clear" v-for="vo in messages" :key="vo.id" :data-id="vo.accountId" :data-uid="vo.user.id" v-if="messages.length" :class="{'is-self':vo.accountId == vo.user.id}">
+            <li class="li-item clear" v-for="(vo, index) in messages" :key="vo.id" :data-id="vo.accountId" :data-uid="vo.user.id" v-if="messages.length" :class="{'is-self':vo.accountId == vo.user.id,active: index === activeLi}" @click="clickLi(index)">
               <div class="identity">
+                <div class="message-time" v-if="vo.message && vo.message.createdAt">{{(vo.message.createdAt||'').slice(0,10)}}</div>
                 <div class="is-messages" v-if="vo.type === 'messages'">
                   <template v-if="vo.message">
                     <div class="is-text" v-if="vo.message.type === 'text'">
@@ -47,24 +48,33 @@
           </ul>
           </div>
         </div>
-        <div class="editor cust-fix">
-
+        <div class="editor-box cust-fix">
+          <v-editor :emotions="emotions"></v-editor>
         </div>
       </el-card>
     </div>
   </div>
 </template>
 <script>
+import editor from './editor.vue'
 export default {
   data () {
     return {
+      activeLi: -1
     }
   },
   props: {
     detail: Object,
-    messages: Array
+    messages: Array,
+    emotions: Object
+  },
+  components: {
+    'v-editor': editor
   },
   methods: {
+    clickLi (index) {
+      this.activeLi = index
+    },
     formatText (text) {
       return (text || '').replace(/(\r|\n)/g, (m) => {
         return '<br>'
@@ -77,9 +87,12 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss">
+$editB: 80px;
+$editH: 150px;
+$editMT: 8px;
+
 .message-card{
-  /*padding-left: 2px;*/
   padding-bottom: 1px;
   width: 50%;
   margin-left: 25%;
@@ -88,9 +101,10 @@ export default {
 .message-card .card-box{
   height: 100%;
   border-top: none;
+  border-bottom: none;
   border-right: 1px solid #e4e7ed;
-  box-shadow: none;
   border-radius: 0;
+  box-shadow: none;
   padding-left: 15px;
   padding-right: 15px;
 }
@@ -113,21 +127,13 @@ export default {
 }
 
 .user-detail .scroll-box{
-  top: 180px;
-  bottom: 181px;
+  top: 188px;
+  bottom: $editB + $editH + $editMT;
   width: 50%;
   margin-left: -55px;
-  overflow: hidden; /* 隐藏滚动条右侧 */
-  border: 1px solid #e4e7ed;
-  border-top: none;
-  border-bottom: none;
-  border-left: 1px solid #e4e7ed;
-  border-right: 2px solid #f1f1f1; /* 给滚动条添加右侧边框 */
 }
 .user-detail .scroll-box .scroll{
-  margin: -14px -10px -14px 0; /* 隐藏上下三角 */
-  padding: 14px 0;
-  padding-left: 15px;
+  padding-left: 25px;
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -135,20 +141,20 @@ export default {
 .user-detail .scroll-box .scroll .el-table{
   margin-bottom: -1px;
 }
-.user-detail .editor{
+.user-detail .editor-box{
   width: 50%;
-  height: 100px;
-  bottom: 80px;
+  height: $editH;
+  bottom: $editB;
   top: auto;
-  margin-left: -37px;
+  margin-left: -36px;
   border-top: 1px solid #e4e7ed;
-  border-bottom: 1px solid #e4e7ed;
 }
 .content-list{
   padding: 10px;
 }
 .content-list .li-item{
-  padding: 10px;
+  padding: 15px 10px 20px;
+  border-left: 2px solid transparent;
 }
 .content-list .li-item .identity{
   text-align: left;
@@ -156,9 +162,48 @@ export default {
 .content-list .li-item.is-self .identity{
   text-align: right;
 }
+.content-list .li-item.active:not(.is-self){
+  border-left: 2px solid #6bbc64;
+  background-color: #fafafa;
+}
+.content-list .li-item:not(.is-self):hover{
+  border-left: 2px solid #6bbc64;
+  background-color: #fafafa;
+}
+.content-list .message-time{
+  font-size: 12px;
+  line-height: 34px;
+  padding-left: 6px;
+}
+
 .content-text{
-  padding: 5px 15px;
-  background: #eee;
+  padding: 10px 20px;
+  font-size: 12px;
+  background: #e6f8e9;
+  border-radius: 3px;
+  position: relative;
+  margin-left: 6px;
+  line-height: 24px;
+  display: inline-block;
+}
+.content-text:before{
+  width: 0;
+  height: 0;
+  content: " ";
+  position: absolute;
+  top: 50%;
+  border-right: 6px solid #e6f8e9;
+  border-bottom: 6px solid transparent;
+  border-top: 6px solid transparent;
+  left: -6px;
+  background: transparent;
+  margin-top: -6px;
+}
+.is-self .content-text:before{
+  left: auto;
+  right: -6px;
+  border-left: 6px solid #e6f8e9;
+  border-right: none;
 }
 .content-list a{
   color: #6bbc64;

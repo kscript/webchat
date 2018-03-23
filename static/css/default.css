@@ -5,6 +5,15 @@
 li{
   list-style: none;
 }
+.rel{
+  position: relative;
+}
+.abs{
+  position: absolute;
+}
+.fix{
+  position: fixed;
+}
 .clearfix:after{
     clear:both;
 }
@@ -27,15 +36,30 @@ li{
 .text-right{
   text-align: right;
 }
-
+.wrap{
+  flex-wrap: wrap;
+}
+.nowrap{
+  flex-wrap: nowrap;
+}
 .full{
   width: 100%;
 }
-
+.no-outline{
+  outline: none;
+}
 .cust-fix{
   position: fixed;
   top: 99px;
   bottom: 80px;
   left: auto;
   right: auto;
+}
+
+.scroll::-webkit-scrollbar {
+  width:5px;
+}
+.scroll::-webkit-scrollbar-thumb{
+  background: #ddd;
+  border-radius:4px;
 }
