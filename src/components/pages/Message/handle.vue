@@ -3,20 +3,20 @@
     <div class="handle-box cust-fix">
       <div class="handle-list">
         <div class="collapse-box">
-          <el-collapse accordion>
-            <el-collapse-item>
+          <el-collapse accordion class="accordion-icon-left">
+            <el-collapse-item v-for="(v1, i1) in handles" :key="i1">
               <template slot="title">
-                一致性 Consistency<i class="header-icon el-icon-info"></i>
+                <div class="accordion-title">
+                  {{v1.label}}
+                </div>
               </template>
-              <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-              <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
-            </el-collapse-item>
-            <el-collapse-item>
-              <template slot="title">
-                一致性 Consistency<i class="header-icon el-icon-info"></i>
-              </template>
-              <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-              <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
+              <div class="accordion-content">
+                <div class="handlers" v-for="(v2,i2) in v1.list" :key="i2">
+                  <template v-if="v2.type && v2.type === 'button'">
+                    <el-button @click="handler(v2,i2)" size="small">{{v2.label}}</el-button>
+                  </template>
+                </div>
+              </div>
             </el-collapse-item>
           </el-collapse>
         </div>
@@ -28,15 +28,46 @@
 export default {
   data () {
     return {
+      handles: [
+        {
+          label: '客户',
+          list: [
+            {
+              id: 0,
+              type: 'button',
+              label: '收藏客户'
+            }
+          ]
+        },
+        {
+          label: '话术',
+          list: [
+            {
+              id: 0,
+              type: 'button',
+              label: '添加分组'
+            }
+          ]
+        },
+        {
+          label: '记录'
+        }
+      ]
     }
   },
   props: {
     users: Array,
     detail: Object
+  },
+  methods: {
+    handler (v2, i2) {
+
+    }
   }
 }
 </script>
-<style>
+<style lang="scss">
+$titleH: 40px;
 .handle-box{
   margin-left: 75%;
   width: 25%;
@@ -46,12 +77,69 @@ export default {
 .handle-list{
   padding-right: 40px;
   height: 100%;
+
+  .collapse-box{
+    height: 100%;
+    padding: 5px 10px;
+  }
+  .el-collapse{
+    border: 1px solid #d9d9d9;
+    border-radius: 3px;
+    margin:0 10px;
+  }
+  .el-collapse-item__header{
+    height: $titleH;
+    line-height: $titleH;
+    border-top: 1px solid #d9d9d9;
+    border-bottom: none;
+    background: none;
+  }
+  .el-collapse-item__wrap{
+    border-bottom: none;
+    background: none;
+  }
+  .accordion-title{
+    padding-left: 15px;
+    background-color: #f4f4f4;
+  }
+  .el-collapse-item__content{
+    padding-bottom: 0;
+  }
+  .el-collapse-item{
+    &:last-child{
+      margin-bottom: 0;
+      .el-collapse-item__header{
+        border-bottom: none;
+      }
+    }
+    &:first-child{
+      .el-collapse-item__header{
+        border-top: none;
+      }
+    }
+    .el-icon-arrow-right{
+      line-height: $titleH;
+      margin-left: 5px;
+      float: left;
+      color: #666;
+      font-size: 16px;
+      transform: scale(.8333);
+      transition: transform .24s ease;
+      &:before{
+        content: "\e60e";
+      }
+    }
+    &.is-active{
+      .el-collapse-item__header{
+        .el-collapse-item__arrow{
+          transform: rotate(.25turn) scale(.8333);
+        }
+      }
+    }
+  }
+  .handlers{
+    padding: 10px 10px;
+  }
 }
-.handle-list .collapse-box{
-  height: 100%;
-}
-.handle-list .el-collapse{
-  padding: 10px;
-  border: none;
-}
+
 </style>
