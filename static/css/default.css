@@ -5,6 +5,8 @@
 li{
   list-style: none;
 }
+
+/* 定位 */
 .rel{
   position: relative;
 }
@@ -14,6 +16,8 @@ li{
 .fix{
   position: fixed;
 }
+
+/* 浮动 */
 .clearfix:after{
     clear:both;
 }
@@ -27,6 +31,8 @@ li{
 .right{
   float: right;
 }
+
+/* 对齐 */
 .text-left{
   text-align: left;
 }
@@ -36,12 +42,24 @@ li{
 .text-right{
   text-align: right;
 }
+
+/* flex */
 .wrap{
   flex-wrap: wrap;
 }
 .nowrap{
   flex-wrap: nowrap;
 }
+
+/* chrome滚动条 */
+.scroll::-webkit-scrollbar {
+  width:5px;
+}
+.scroll::-webkit-scrollbar-thumb{
+  background: #ddd;
+  border-radius:4px;
+}
+
 .full{
   width: 100%;
 }
@@ -56,10 +74,27 @@ li{
   right: auto;
 }
 
-.scroll::-webkit-scrollbar {
-  width:5px;
+
+/* 字体 from: tuice.com */
+@font-face {
+  font-family: "iconfont";
+  src: url("../fonts/iconfont.eot"); /* IE9 */
+  src: url("../fonts/iconfont.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+  url("../fonts/iconfont.woff") format("woff"), /* chrome、firefox */
+  url("../fonts/iconfont.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+  url("../fonts/iconfont.svg#uxfonteditor") format("svg"); /* iOS 4.1- */
 }
-.scroll::-webkit-scrollbar-thumb{
-  background: #ddd;
-  border-radius:4px;
+
+.iconfont,i{
+  font-family: "iconfont" !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+.icon-smile:before{content:"\E677"}
+.icon-pictrue:before{content:"\E689"}

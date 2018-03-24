@@ -2,7 +2,7 @@
   <div class="editor">
     <div class="editor-context rel">
       <el-popover
-        popper-class="no-outline"
+        popper-class="emoji-list no-outline"
         ref="emotions-popover"
         placement="top-start"
         title=""
@@ -26,11 +26,12 @@
         </template>
       </el-popover>
       <div class="el-textarea">
-        <textarea class="el-textarea__inner editor-text scroll" v-model="editorText" @click="inputClick" @keyup="keyup"></textarea>
+        <textarea class="el-textarea__inner editor-text scroll" v-model="editorText" @click="inputClick" @keyup="keyup" placeholder="使用 Ctrl + 回车 发送消息"></textarea>
       </div>
       <!-- <el-input type="textarea" v-model="editorText" :tabindex="tabindex" @click="inputClick" @select="inputSelect"></el-input> -->
       <div class="editor-icon">
-        <span class="icon" v-popover:emotions-popover>😊</span><span class="icon el-icon-picture-outline"></span>
+        <span class="iconfont icon-smile" v-popover:emotions-popover></span>
+        <span class="iconfont icon-pictrue"></span>
         <el-button class="right" size="mini" type="success" @click="sendMessage">发私信</el-button>
       </div>
     </div>
@@ -49,11 +50,15 @@ export default {
     emotions: Object
   },
   methods: {
-    sendMessage () {
-      console.log(this)
+    sendMessage (text) {
+      this.$emit('sendMessage', text)
     },
     keyup ($event) {
-      console.log($event)
+      let self = this
+      if ($event.ctrlKey && $event.key === 'Enter' && self.editorText !== '') {
+        self.sendMessage(self.editorText)
+        self.editorText = ''
+      }
     },
     inputClick ($event) {
       this.selectionEnd = $event.target.selectionEnd || 0
@@ -62,7 +67,6 @@ export default {
       this.editorText = this.editorText.slice(0, this.selectionEnd) + emoji.value + this.editorText.slice(this.selectionEnd)
     },
     handleClick () {
-
     }
   },
   created () {
@@ -72,45 +76,55 @@ export default {
 </script>
 <style lang="scss">
 $height: 96px;
+
 .editor{
   padding: 8px;
+  .editor-context{
+    padding: (106 - $height)/2;
+    height: $height;
+    .editor-text{
+      width: 100%;
+      height: $height;
+      outline: none;
+      resize: none;
+    }
+    .editor-icon{
+      padding: 5px;
+      margin-top: 3px;
+      .iconfont{
+        padding: 0px 3px;
+        font-size: 16px;
+        color: #999;
+        cursor: pointer;
+      }
+    }
+  }
 }
-.editor .editor-context{
-  padding: (106 - $height)/2;
-  height: $height;
-}
-.editor .editor-context .editor-text{
-  width: 100%;
-  height: $height;
-  outline: none;
-  resize: none;
-}
-.editor-icon{
-  font-size: 20px;
-  padding: 5px;
-  margin-top: 3px;
-}
-.editor-icon .icon{
-  cursor: pointer;
-  color: #999;
-  padding: 0px 5px;
+.emoji-list .el-tabs__content{
+    min-height: 240px;
 }
 .emoji-box{
-  padding-bottom: 10px;
-}
-.emoji-box .emoji{
-  text-align: center;
-  max-width: (100/12) + %;
-  min-width: (100/12) + %;
-  line-height: 11px;
-  padding: 3px 0;
-}
-.emoji-box .emoji:active{
-  background-color: #eee;
-}
-.emoji-box .emoji img{
-  width: 22px;
-  height: 22px;
-  cursor: pointer;
+  margin: 0 auto 10px;
+  border-bottom: 1px solid #eeeac9;
+  border-right: 1px solid #eeeac9;
+
+  .emoji{
+    max-width: (100/12) + %;
+    min-width: (100/12) + %;
+    padding: 3px 0;
+    line-height: 11px;
+    text-align: center;
+    background: #fffce4;
+    border-top: 1px solid #eeeac9;
+    border-left: 1px solid #eeeac9;
+    &:active{
+      background-color: #f1edd0;
+    }
+    img{
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+    }
+  }
 }
 </style>

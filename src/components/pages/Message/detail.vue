@@ -49,7 +49,7 @@
           </div>
         </div>
         <div class="editor-box cust-fix">
-          <v-editor :emotions="emotions"></v-editor>
+          <v-editor :emotions="emotions" @sendMessage="sendMessage"></v-editor>
         </div>
       </el-card>
     </div>
@@ -81,6 +81,9 @@ export default {
       }).replace(/\s/g, '&nbsp;').replace(/http:\/\/(.*?)(\b|)$/g, (m) => {
         return '<a href="' + m + '">' + m + '</a>'
       })
+    },
+    sendMessage (text) {
+      console.log(text)
     }
   },
   created () {
