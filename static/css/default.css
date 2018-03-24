@@ -60,6 +60,13 @@ li{
   border-radius:4px;
 }
 
+/* 省略号 */
+.ellipsis{
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+}
+
 .full{
   width: 100%;
 }
@@ -92,9 +99,23 @@ li{
   font-weight: normal;
   font-variant: normal;
   text-transform: none;
+  text-rendering: auto;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+
+  vertical-align: baseline;
+  text-align: center;
 }
 .icon-smile:before{content:"\E677"}
 .icon-pictrue:before{content:"\E689"}
+.icon-plus:before{content:"\E63E"}
+.icon-edit:before{content:"\E668"}
+.icon-position:before{content:"\E665"}
+.icon-favorite:before{content:"\E6B0"}
+.icon-letter:before{content:"\E682"}
+.icon-close:before{content:"\E632"}
+.icon-delete:before{content:"\E661"}
+.icon-male:before{content:"\E6B3"}
+.icon-female:before{content:"\E6B4"}

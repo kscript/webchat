@@ -31,11 +31,11 @@
         </div>
       </div>
       <el-pagination
-      class="text-right"
-      small
-      layout="prev, pager, next"
-      :total="page.total">
-    </el-pagination>
+        class="text-right"
+        small
+        layout="prev, pager, next"
+        :total="page.total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -69,50 +69,50 @@ export default {
 <style lang="scss">
 .message-list{
   padding-top: 0px;
-}
-.user-list .scroll-box{
-  height: 100%;
-  border: 1px solid #e4e7ed;
-  border-top: none;
-  border-right: none;
-}
-.user-list .scroll-box .scroll{
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.user-list .scroll-box .scroll .el-table{
-  margin-bottom: -1px;
-}
-.user-list .el-pagination{
-  /*border: 1px solid #e4e7ed;
-  border-top: none;
-  border-right: none;*/
-}
-.user-list{
-  z-index: 120;
-  width: 25%;
-  padding-bottom: 28px;
-}
-.user-list .el-badge{
-  padding: 4px 0;
-  height: 44px;
-  line-height: normal;
-}
-.user-list .el-badge .el-badge__content{
-  background-color: #ff0000;
-  top: 10px;
-  border: none;
-}
-.user-list .photo{
-  width: 40px;
-  height: 40px;
-  border-radius: 5px;
-}
-.user-list .message-time,
-.user-list .message-text{
-  line-height: 16px;
-  color: #999;
-  font-size: 12px;
+  .user-list .scroll-box{
+    height: 100%;
+    border: 1px solid #e4e7ed;
+    border-top: none;
+    border-right: none;
+  }
+  .user-list .scroll-box .scroll{
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .user-list .scroll-box .scroll .el-table{
+    margin-bottom: -1px;
+  }
+  .user-list .el-pagination{
+    /*border: 1px solid #e4e7ed;
+    border-top: none;
+    border-right: none;*/
+  }
+  .user-list{
+    z-index: 120;
+    width: 25%;
+    padding-bottom: 28px;
+  }
+  .user-list .el-badge{
+    padding: 4px 0;
+    height: 44px;
+    line-height: normal;
+  }
+  .user-list .el-badge .el-badge__content{
+    background-color: #ff0000;
+    top: 10px;
+    border: none;
+  }
+  .user-list .photo{
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+  }
+  .user-list .message-time,
+  .user-list .message-text{
+    line-height: 16px;
+    color: #999;
+    font-size: 12px;
+  }
 }
 </style>

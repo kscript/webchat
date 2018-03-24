@@ -10,12 +10,31 @@
                 </el-badge>
               </el-col>
               <el-col :span="16">
-                <div class="user-name">{{detail.user.name}}</div>
+                <div class="user-name">
+                  {{detail.user.name}}
+                  <span class="iconfont" :class="detail.user.gender === 'm' ? 'icon-male':'icon-female'"></span>
+                </div>
                 <div class="user-info">
                   <span class="info-item"><span class="nums">{{detail.user.followers_count}}</span> <span class="text">粉丝</span></span>
                   <span class="info-item"><span class="nums">{{detail.user.friends_count}}</span> <span class="text">关注</span></span>
                   <span class="info-item"><span class="nums">{{detail.user.statuses_count}}</span> <span class="text">微博</span></span>
-                  <span class="info-item"><span class="location"></span> <span class="text">{{(detail.user.location||'').split(' ')[0]}}</span></span>
+                  <span class="info-item"><span class="iconfont icon-position"></span> <span class="text">{{(detail.user.location||'').split(' ')[0]}}</span></span>
+                </div>
+              </el-col>
+              <el-col :span="6">
+                <div class="icon-list text-right">
+                  <el-tooltip content="收藏客户" placement="bottom" :open-delay="300">
+                    <span class="iconfont icon-favorite" @click="iconHandler('favorite')"></span>
+                  </el-tooltip>
+                  <el-tooltip content="去微博发私信" placement="bottom" :open-delay="300">
+                    <span class="iconfont icon-letter" @click="iconHandler('letter')"></span>
+                  </el-tooltip>
+                  <el-tooltip content="结束对话" placement="bottom" :open-delay="300">
+                    <span class="iconfont icon-close" @click="iconHandler('close')"></span>
+                  </el-tooltip>
+                  <el-tooltip content="垃圾箱" placement="bottom" :open-delay="300">
+                    <span class="iconfont icon-delete" @click="iconHandler('delete')"></span>
+                  </el-tooltip>
                 </div>
               </el-col>
             </el-row>
@@ -82,6 +101,9 @@ export default {
         return '<a href="' + m + '">' + m + '</a>'
       })
     },
+    iconHandler (type) {
+
+    },
     sendMessage (text) {
       console.log(text)
     }
@@ -100,6 +122,9 @@ $editMT: 8px;
   width: 50%;
   margin-left: 25%;
   z-index: 110;
+  .el-card__header{
+    padding: 12px 15px;
+  }
 }
 .message-card .card-box{
   height: 100%;
@@ -111,47 +136,81 @@ $editMT: 8px;
   padding-left: 15px;
   padding-right: 15px;
 }
-.user-detail .photo{
-  width: 40px;
-  height: 40px;
-  border-radius: 5px;
-}
-.user-detail .user-info{
-  padding-top: 5px;
-  font-size: 12px;
-  color: #666;
-}
-.user-detail .info-item{
-  padding: 0px 12px;
-  border-right: 2px solid #f2f2f2;
-}
-.user-detail .info-item:first-child{
-  padding-left: 0;
+.user-detail{
+  .photo{
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+  }
+  .user-name{
+    font-size: 14px;
+    color: #333;
+    .icon-female{
+      color: #e91e63;
+      font-weight: 600;
+    }
+    .icon-male{
+      color: #6bbc64;
+      font-weight: 600;
+    }
+  }
+  .user-info{
+    padding-top: 10px;
+    font-size: 12px;
+    color: #666;
+    .info-item{
+      padding: 0px 12px;
+      border-right: 2px solid #f2f2f2;
+      &:first-child{
+        padding-left: 0;
+      }
+      .nums{
+        font-weight: 700;
+        color: #666;
+      }
+      .text{
+        color: #999;
+      }
+      .icon-position{
+        color: #333;
+        transform: scaleX(.8);
+      }
+    }
+  }
+  .scroll-box{
+    top: 188px;
+    bottom: $editB + $editH + $editMT;
+    width: 50%;
+    margin-left: -55px;
+    .scroll{
+      padding-left: 25px;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      .el-table{
+        margin-bottom: -1px;
+      }
+    }
+  }
+  .editor-box{
+    width: 50%;
+    height: $editH;
+    bottom: $editB;
+    top: auto;
+    margin-left: -36px;
+    border-top: 1px solid #e4e7ed;
+  }
+  .icon-list{
+    font-size: 0;
+    .iconfont{
+      font-size: 14px;
+      color: #6bbc64;
+      cursor: pointer;
+      padding: 1px 5px;
+    }
+  }
 }
 
-.user-detail .scroll-box{
-  top: 188px;
-  bottom: $editB + $editH + $editMT;
-  width: 50%;
-  margin-left: -55px;
-}
-.user-detail .scroll-box .scroll{
-  padding-left: 25px;
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.user-detail .scroll-box .scroll .el-table{
-  margin-bottom: -1px;
-}
-.user-detail .editor-box{
-  width: 50%;
-  height: $editH;
-  bottom: $editB;
-  top: auto;
-  margin-left: -36px;
-  border-top: 1px solid #e4e7ed;
-}
 .content-list{
   padding: 10px;
 }
