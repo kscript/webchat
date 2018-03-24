@@ -5,6 +5,12 @@
       <v-messagelist :users="users" @selectUser="selectUser"></v-messagelist>
       <v-messagedetail :detail="detail" :messages="messages" :emotions="emotions"></v-messagedetail>
       <v-messagehandle :users="users" :detail="detail"></v-messagehandle>
+      <el-dialog :title="dialog.title" :visible.sync="dialog.visible" :width="dialog.width" v-if="dialog">
+        <span slot="footer" class="dialog-footer" v-if="dialog.footer.show">
+          <el-button @click="dialog.visible = false" v-if="dialog.footer.showCancel">取 消</el-button>
+          <el-button type="primary" @click="dialog.visible = false" v-if="dialog.footer.showConfirm">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -20,7 +26,8 @@ export default {
       users: [],
       messages: [],
       detail: {},
-      emotions: {}
+      emotions: {},
+      dialog: null
     }
   },
   components: {
@@ -30,6 +37,25 @@ export default {
     'v-messagehandle': messageHandle
   },
   methods: {
+    setDialog (option) {
+      let dialog = {
+        title: '',
+        visible: false,
+        width: '600px',
+        footer: {
+          show: true,
+          showCancel: true,
+          showConfirm: true
+        }
+      }
+      option = option || {}
+      for (let key in dialog) {
+        if (option[key] === undefined) {
+          option[key] = dialog[key]
+        }
+      }
+      return option
+    },
     selectUser (vo) {
       this.getMessageList(vo)
     },
@@ -76,6 +102,7 @@ export default {
   },
   created () {
     this.init()
+    this.setDialog()
     window.vm = this
   }
 }
