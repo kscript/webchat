@@ -1,5 +1,5 @@
 <template>
-  <el-header height="40px">
+  <el-header height="40px" class="bg-white">
     <el-tabs v-model="tabs.activeName" @tab-click="handleClick" class="tabs-small">
       <el-tab-pane :label="vo.label" :key="vo.name" :name="vo.name" v-for="vo in tabs.list">
         <template slot="label">

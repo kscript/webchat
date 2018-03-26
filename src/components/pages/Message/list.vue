@@ -1,6 +1,6 @@
 <template>
   <div class="message-list">
-    <div class="user-list cust-fix">
+    <div class="user-list cust-fix bg-white">
       <div class="scroll-box">
         <div class="scroll">
           <el-table
@@ -69,50 +69,48 @@ export default {
 <style lang="scss">
 .message-list{
   padding-top: 0px;
-  .user-list .scroll-box{
-    height: 100%;
-    border: 1px solid #e4e7ed;
-    border-top: none;
-    border-right: none;
-  }
-  .user-list .scroll-box .scroll{
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  .user-list .scroll-box .scroll .el-table{
-    margin-bottom: -1px;
-  }
-  .user-list .el-pagination{
-    /*border: 1px solid #e4e7ed;
-    border-top: none;
-    border-right: none;*/
-  }
   .user-list{
     z-index: 120;
     width: 25%;
-    padding-bottom: 28px;
-  }
-  .user-list .el-badge{
-    padding: 4px 0;
-    height: 44px;
-    line-height: normal;
-  }
-  .user-list .el-badge .el-badge__content{
-    background-color: #ff0000;
-    top: 10px;
-    border: none;
-  }
-  .user-list .photo{
-    width: 40px;
-    height: 40px;
-    border-radius: 5px;
-  }
-  .user-list .message-time,
-  .user-list .message-text{
-    line-height: 16px;
-    color: #999;
-    font-size: 12px;
+    padding-bottom: 42px;
+    .scroll-box{
+      height: 100%;
+      border: 1px solid #e4e7ed;
+      border-top: none;
+      border-right: none;
+      .scroll{
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        .el-table{
+          margin-bottom: -1px;
+        }
+        .message-time,
+        .message-text{
+          line-height: 16px;
+          color: #999;
+          font-size: 12px;
+        }
+        .el-badge{
+          padding: 4px 0;
+          height: 44px;
+          line-height: normal;
+          .el-badge__content{
+            background-color: #ff0000;
+            top: 10px;
+            border: none;
+          }
+        }
+      }
+    }
+    .photo{
+      width: 40px;
+      height: 40px;
+      border-radius: 5px;
+    }
+    .el-pagination{
+      padding: 8px;
+    }
   }
 }
 </style>

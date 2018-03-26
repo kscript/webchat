@@ -1,6 +1,6 @@
 <template>
   <div class="customer clear">
-    <div class="layout-left left">
+    <div class="layout-left cust-fix bg-white">
       <div class="box">
         <div class="hd">
           客户分组
@@ -229,7 +229,6 @@ export default {
   .layout-left{
     width: 220px;
     padding-top: 20px;
-    position: fixed;
     top: 40px;
     left: auto;
     bottom: 0;

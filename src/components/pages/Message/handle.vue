@@ -1,6 +1,6 @@
 <template>
   <div class="message-handle">
-    <div class="handle-box cust-fix">
+    <div class="handle-box cust-fix bg-white">
       <div class="handle-list">
         <div class="collapse-box">
           <el-collapse accordion class="collapse-1">

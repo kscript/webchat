@@ -1,11 +1,11 @@
 <template>
-  <el-footer class="footer cust-fix"></el-footer>
+  <div class="reply-letter">
+  </div>
 </template>
 <script>
 export default {
   data () {
-    return {
-    }
+    return {}
   }
 }
 </script>

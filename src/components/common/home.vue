@@ -34,6 +34,9 @@ export default {
 </script>
 <style lang="scss">
 @import '../../../static/scss/global.scss';
+body{
+  background-color: #f8f8f8;
+}
 .el-main{
   padding: 0px 0px;
 }
