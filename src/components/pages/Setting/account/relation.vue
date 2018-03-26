@@ -1,11 +1,11 @@
 <template>
-  <el-footer class="footer cust-fix"></el-footer>
+  <div class="account-relation">
+  </div>
 </template>
 <script>
 export default {
   data () {
-    return {
-    }
+    return {}
   }
 }
 </script>

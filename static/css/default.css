@@ -1,3 +1,6 @@
+/*html,body{
+  height: 100%;
+}*/
 *{
   padding: 0;
   margin: 0;
@@ -74,13 +77,20 @@ li{
   outline: none;
 }
 .cust-fix{
+  position: absolute;
   position: fixed;
   top: 99px;
-  bottom: 80px;
+  bottom: 0px;
   left: auto;
   right: auto;
 }
-
+.bg-white{
+  background-color: #fff;
+}
+.footer{
+  top: auto;
+  bottom: 0;
+}
 
 /* 字体 from: tuice.com */
 @font-face {
