@@ -68,18 +68,19 @@
           </div>
         </div>
         <div class="editor-box cust-fix">
-          <v-editor :emotions="emotions" @sendMessage="sendMessage"></v-editor>
+          <v-editor :emotions="emotions" @sendMessage="sendMessage" :options="conf"></v-editor>
         </div>
       </el-card>
     </div>
   </div>
 </template>
 <script>
-import editor from './editor.vue'
+import editor from '../../common/editor.vue'
 export default {
   data () {
     return {
-      activeLi: -1
+      activeLi: -1,
+      conf: {}
     }
   },
   props: {
@@ -121,7 +122,7 @@ $editMT: 8px;
   padding-bottom: 1px;
   width: 50%;
   margin-left: 25%;
-  z-index: 110;
+  z-index: 130;
   .el-card__header{
     padding: 12px 15px;
   }

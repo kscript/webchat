@@ -8,7 +8,7 @@
   </div>
 </template>
 <script>
-import editor from './editor.vue'
+import editor from '../../common/editor.vue'
 export default {
   data () {
     return {
