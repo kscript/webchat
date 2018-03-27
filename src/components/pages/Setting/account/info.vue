@@ -39,6 +39,10 @@
             </small>
           </div>
           <div class="content">
+            <div class="user">
+              <img :src="user.logo" alt="" class="logo">
+              <span class="user-name">{{user.name}}</span>
+            </div>
             <el-button size="mini" type="default">配置粉丝服务</el-button>
           </div>
         </div>
@@ -54,6 +58,10 @@
             </small>
           </div>
           <div class="content">
+            <div class="user">
+              <img :src="user.logo" alt="" class="logo">
+              <span class="user-name">{{user.name}}</span>
+            </div>
             <el-button size="mini" type="default">配置私信</el-button>
             <span class="note-text">未开通</span>
           </div>
@@ -66,6 +74,10 @@
 export default {
   data () {
     return {
+      user: {
+        logo: 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==',
+        name: '测试'
+      },
       accounts: [
         {
           name: '测试',
@@ -122,6 +134,20 @@ export default {
     }
     .content{
       padding: 10px;
+      .user{
+        color: #666;
+        font-size: 12px;
+        padding-bottom: 8px;
+        line-height: 30px;
+        .logo{
+          width: 30px;
+          height: 30px;
+          border: 1px solid #eee;
+          border-radius: 3px;
+          vertical-align: middle;
+          margin-right: 5px;
+        }
+      }
       .note-text{
         padding: 0px 5px;
         font-size: 12px;
