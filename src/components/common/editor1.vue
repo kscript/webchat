@@ -26,9 +26,16 @@
         </template>
       </el-popover>
       <div class="el-textarea">
-        <textarea class="el-textarea__inner editor-text scroll" v-model="editorText" @click="inputClick" @keyup="keyup" placeholder="使用 Ctrl + 回车 发送消息"></textarea>
+        <quill-editor class="quill-editor"
+          v-model="content"
+          ref="newEditor"
+          :options="editorOption"
+          @blur="onEditorBlur($event)"
+          @focus="onEditorFocus($event)"
+          @change="onEditorChange($event)">
+        </quill-editor>
+        <!-- <div class="meditor el-textarea__inner editor-text scroll" contenteditable="true" @keyup="keyup" v-html="editorHtml"></div> -->
       </div>
-      <!-- <el-input type="textarea" v-model="editorText" :tabindex="tabindex" @click="inputClick" @select="inputSelect"></el-input> -->
       <div class="editor-icon">
         <span class="iconfont icon-smile" v-popover:emotions-popover></span>
         <span class="iconfont icon-pictrue"></span>
@@ -38,18 +45,59 @@
   </div>
 </template>
 <script>
+
 export default {
   data () {
     return {
       activeName: 'default',
       editorText: '',
+      editorHtml: '',
+      content: '',
+      editorOption: {
+        theme: 'snow',
+        placeholder: '请填写简介',
+        history: {
+          delay: 100,
+          maxStack: 100,
+          userOnly: false
+        },
+        strict: false,
+        modules: {
+          toolbar: [
+            [
+              {
+                'color': []
+              },
+              {
+                'background': []
+              },
+              'link',
+              'image'
+            ]
+          ]
+        }
+      },
       selectionEnd: 0
     }
   },
+  components: {quillEditor},
   props: {
-    emotions: Object
+    emotions: Object,
+    conf: Object
   },
   methods: {
+    onEditorBlur () {
+
+    },
+    onEditorFocus () {
+
+    },
+    onEditorChange () {
+
+    },
+    parse () {
+
+    },
     sendMessage (text) {
       this.$emit('sendMessage', text)
     },
@@ -57,7 +105,6 @@ export default {
       let self = this
       if ($event.ctrlKey && $event.key === 'Enter' && self.editorText !== '') {
         self.sendMessage(self.editorText)
-        self.editorText = ''
       }
     },
     inputClick ($event) {
@@ -71,6 +118,9 @@ export default {
   },
   created () {
     console.log(this)
+  },
+  mounted () {
+    console.log([Quill])
   }
 }
 </script>
