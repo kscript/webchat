@@ -1,5 +1,5 @@
 <template>
-  <div class="editor">
+  <div class="meditor">
     <div class="editor-context rel">
       <el-popover
         popper-class="emoji-list no-outline"
@@ -25,28 +25,77 @@
           </el-tabs>
         </template>
       </el-popover>
+      <el-popover
+        popper-class="video-list no-outline"
+        ref="image-popover"
+        placement="top"
+        title=""
+        width="320"
+        trigger="click">
+        <template slot-scope="content">
+          <el-tabs>
+            <el-tab-pane>
+              <template slot="label">本地图片</template>
+              <el-upload
+                class="upload-demo"
+                action=""
+                accept="image/*"
+                :show-file-list="false"
+                :auto-upload="false"
+                :limit="1"
+                :file-list="fileList"
+                :on-change="uploadChange"
+                :on-exceed="uploadExceed">
+                <el-button size="mini">上传</el-button>
+              </el-upload>
+            </el-tab-pane>
+            <el-tab-pane>
+              <template slot="label">网络图片</template>
+              <el-row>
+                <el-col :span="3" style="min-width: 40px; line-height: 28px;">url:</el-col>
+                <el-col :span="16">
+                  <el-input size="mini" v-model="imageUrl"></el-input>
+                </el-col>
+                <el-col :span="4">
+                  <el-button size="mini" style="margin-left: 10px;">确定</el-button>
+                </el-col>
+              </el-row>
+            </el-tab-pane>
+          </el-tabs>
+        </template>
+      </el-popover>
+      <el-popover
+        popper-class="video-list no-outline"
+        ref="video-popover"
+        placement="top"
+        title=""
+        width="320"
+        trigger="click">
+        <template slot-scope="content">
+          <el-row>
+            <el-col :span="3" style="min-width: 40px; line-height: 28px;">url:</el-col>
+            <el-col :span="16">
+              <el-input size="mini" v-model="videoUrl"></el-input>
+            </el-col>
+            <el-col :span="4">
+              <el-button size="mini" style="margin-left: 10px;">确定</el-button>
+            </el-col>
+          </el-row>
+        </template>
+      </el-popover>
       <div class="el-textarea">
         <div class="meditor-el el-textarea__inner editor-text scroll"
           contenteditable="true"
           ref="meditor"
           :style="'overflow-y: auto; height: ' + editor.height + 'px'"
           @blur="inputBlur"
-          @click="inputClick">
+          @click="inputClick"
+          @drop="inputDrop">
         </div>
         <div class="editor-icon">
           <span class="iconfont icon-smile" v-popover:emotions-popover></span>
-          <el-upload
-            class="upload-demo"
-            action=""
-            accept="image/*"
-            :show-file-list="false"
-            :auto-upload="false"
-            :limit="1"
-            :file-list="fileList"
-            :on-change="uploadChange"
-            :on-exceed="uploadExceed">
-            <span class="iconfont icon-pictrue"></span>
-          </el-upload>
+            <span class="iconfont icon-pictrue" v-popover:image-popover></span>
+          <span class="iconfont icon-video" v-popover:video-popover></span>
           <el-button class="right" size="mini" type="success" @click="sendMessage">发私信</el-button>
         </div>
       </div>
@@ -62,6 +111,8 @@ export default {
       range: null,
       tempIndex: 0,
       filemap: {},
+      videoUrl: '',
+      imageUrl: '',
       fileList: []
     }
   },
@@ -75,7 +126,7 @@ export default {
         ref: 'meditor', // 编辑器容器
         text: '',
         html: '',
-        height: 160,
+        height: 120,
         range: null,
         selection: null
       }, {})
@@ -124,6 +175,7 @@ export default {
       this.insertContent(pic)
 
       this.filemap[file.uid] = file
+      this.$refs['image-popover'].showPopper = false
       // this.insertContent('<img src="' + file.url + '" class="blob-pic blob-' + file.uid + '" alt="' + file.name + '">')
     },
     // 提交消息
@@ -132,18 +184,49 @@ export default {
       console.log(text)
       this.$emit('sendMessage', text)
     },
-    getContent () {
-      let list = []
-      let el = this.editor.el
-      list.slice.apply(el.childNodes).forEach((item, index) => {
-        // 文本节点
-        if (item.nodeType === 3) {
-          list.push(item.textContent)
-        } else if (/^IMG$/.test(item.tagName)) {
-          list.push('${' + item.src + '|img}')
+    getContent (el) {
+      let self = this
+      return extr(el || self.editor.el)
+      function extr (el) {
+        let list = []
+        let block
+        let content // 递归item获取到的内容
+        let nodes = Array.prototype.slice.apply(el.childNodes)
+        nodes.forEach((item, index) => {
+          if (item.nodeType === 1) { // 元素节点
+            if (item.tagName === 'IMG') {
+              list.push('![' + item.alt + '](' + item.src + ')')
+            } else if (item.tagName === 'A') {
+              list.push('[' + extr(item) + '](' + item.href + ')')
+            } else {
+              block = self.getStyle(item, 'display') === 'block' || item.tagName === 'BR' // 是否要换行
+              content = extr(item)
+              list.push(content + (nodes.length > 1 && block ? '\n' : ''))
+            }
+          } else if (item.nodeType === 3) { // 文本节点
+            list.push(item.textContent)
+          }
+        })
+        return list.join('').replace(/\n$/, '')
+      }
+    },
+    getStyle (el, attr) {
+      let styles = el.currentStyle ? el.currentStyle : window.getComputedStyle(el, null)
+      return attr ? styles[attr] : styles
+    },
+    clearStyle (el) {
+      let self = this
+      el.childNodes && Array.prototype.slice.apply(el.childNodes).forEach((item, index) => {
+        if (item.nodeType === 1) {
+          if (!/^(img|a|div|p|label|span|small|br|hr|h[1-6]|ol|ul|li|dl|dt|dd|i|em)$/i.test(item.tagName)) {
+            (item.parentElement || item.parentNode).removeChild(item)
+          }
+          item.removeAttribute('style')
+          item.removeAttribute('class')
+          item.removeAttribute('id')
+          self.clearStyle(item)
         }
       })
-      return list.join('')
     },
     keyup ($event) {
       let self = this
@@ -162,6 +245,11 @@ export default {
       this.editor.range = selection.createRange ? selection.createRange() : selection.getRangeAt(0)
       if ($event && /^IMG$/.test($event.target.tagName)) {
       }
+    },
+    inputDrop ($event) {
+      this.$nextTick(_ => {
+        this.clearStyle(this.editor.el)
+      })
     },
     insertContent (str) {
       let self = this
@@ -193,6 +281,7 @@ export default {
         }
         selection.removeAllRanges()
         selection.addRange(range)
+        selection.empty()
       }
     },
     selectEmoji (emoji) {
@@ -219,11 +308,11 @@ export default {
 </script>
 <style lang="scss">
 $height: 96px;
-.editor{
+.meditor{
   padding: 8px;
   .editor-context{
     padding: (106 - $height)/2;
-    height: $height;
+
     .editor-text{
       width: 100%;
       height: $height;
