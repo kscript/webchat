@@ -68,7 +68,9 @@
           </div>
         </div>
         <div class="editor-box cust-fix">
-          <v-editor :emotions="emotions" @sendMessage="sendMessage" :options="conf"></v-editor>
+          <div class="editor-padding">
+            <v-editor :emotions="emotions" @sendMessage="sendMessage" :options="conf"></v-editor>
+          </div>
         </div>
       </el-card>
     </div>
@@ -200,6 +202,9 @@ $editMT: 8px;
     top: auto;
     margin-left: -36px;
     border-top: 1px solid #e4e7ed;
+    .editor-padding{
+      padding: 6px;
+    }
   }
   .icon-list{
     font-size: 0;

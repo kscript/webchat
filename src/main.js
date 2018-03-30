@@ -4,15 +4,20 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import elementUI from 'element-ui'
+// import websocket from 'websocket'
 import axios from './axios'
 import store from './store'
+import {regX, wbk} from './utils'
 
 Vue.prototype.$axios = axios
 Vue.prototype.$store = store
+Vue.prototype.$RegX = regX
 
 Vue.use(elementUI)
 
-var eventBus = {
+Vue.prototype.$wbk = wbk
+
+let eventBus = {
   install (Vue, options) {
     Vue.prototype.$bus = new Vue({
       data () {

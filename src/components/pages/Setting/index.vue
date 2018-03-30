@@ -23,8 +23,8 @@
       <div class="box">
         <div class="bd">
           <v-account v-if="handlerItem === 'account'" :active="handlerActive"></v-account>
-          <v-account v-if="handlerItem === 'reply'" :active="handlerActive"></v-account>
-          <v-account v-if="handlerItem === 'service'" :active="handlerActive"></v-account>
+          <v-reply v-if="handlerItem === 'reply'" :active="handlerActive"></v-reply>
+          <v-service v-if="handlerItem === 'service'" :active="handlerActive"></v-service>
         </div>
       </div>
     </div>
@@ -32,6 +32,8 @@
 </template>
 <script>
 import account from './account/index.vue'
+import reply from './reply/index.vue'
+import service from './service/index.vue'
 
 export default {
   data () {
@@ -115,7 +117,9 @@ export default {
     }
   },
   components: {
-    'v-account': account
+    'v-account': account,
+    'v-reply': reply,
+    'v-service': service
   },
   methods: {
     handlerClick (v2, v1) {

@@ -57,7 +57,7 @@
                   <el-input size="mini" v-model="imageUrl"></el-input>
                 </el-col>
                 <el-col :span="4">
-                  <el-button size="mini" style="margin-left: 10px;">确定</el-button>
+                  <el-button size="mini" style="margin-left: 10px;" @click="addImage">确定</el-button>
                 </el-col>
               </el-row>
             </el-tab-pane>
@@ -78,25 +78,68 @@
               <el-input size="mini" v-model="videoUrl"></el-input>
             </el-col>
             <el-col :span="4">
-              <el-button size="mini" style="margin-left: 10px;">确定</el-button>
+              <el-button size="mini" style="margin-left: 10px;" @click="addVideo">确定</el-button>
             </el-col>
           </el-row>
         </template>
       </el-popover>
+      <el-popover
+        popper-class="video-list no-outline"
+        ref="time-popover"
+        placement="top"
+        title=""
+        width="360"
+        trigger="click"
+        @show="timerShow">
+        <template slot-scope="content">
+          <el-row :gutter="5">
+            <el-col :span="9">
+              <el-date-picker
+                v-model="pdate"
+                type="date"
+                placeholder="选择日期" size="mini">
+              </el-date-picker>
+            </el-col>
+            <el-col :span="9">
+              <el-time-picker
+                v-model="ptime"
+                align="center"
+                placeholder="选择时间" size="mini">
+              </el-time-picker>
+            </el-col>
+            <el-col :span="4">
+              <el-button size="mini" style="margin-left: 10px;" @click="addVideo">确定</el-button>
+            </el-col>
+          </el-row>
+        </template>
+      </el-popover>
+      <el-dialog
+        title="查看原图"
+        class="bg-hyaline is-fullscreen"
+        width="100%"
+        top="0"
+        :visible.sync="prviewVisible"
+        append-to-body
+        center>
+        <div class="text-center">
+          <!-- <h4>查看原图</h4> -->
+          <img :src="prviewSrc" alt="" class="prview">
+        </div>
+      </el-dialog>
       <div class="el-textarea">
         <div class="meditor-el el-textarea__inner editor-text scroll"
           contenteditable="true"
           ref="meditor"
           :style="'overflow-y: auto; height: ' + editor.height + 'px'"
-          @blur="inputBlur"
           @click="inputClick"
           @drop="inputDrop">
         </div>
         <div class="editor-icon">
-          <span class="iconfont icon-smile" v-popover:emotions-popover></span>
-            <span class="iconfont icon-pictrue" v-popover:image-popover></span>
-          <span class="iconfont icon-video" v-popover:video-popover></span>
-          <el-button class="right" size="mini" type="success" @click="sendMessage">发私信</el-button>
+            <span class="iconfont icon-smile" v-if="modules.emotions" v-popover:emotions-popover>{{modules.emotions.label}}</span>
+            <span class="iconfont icon-pictrue" v-if="modules.image" v-popover:image-popover>{{modules.image.label}}</span>
+            <span class="iconfont icon-video" v-if="modules.video" v-popover:video-popover>{{modules.video.label}}</span>
+            <span class="iconfont icon-time" v-if="modules.time" v-popover:time-popover>{{modules.time.label}}</span>
+            <el-button class="right" size="mini" type="success" @click="sendMessage">发私信</el-button>
         </div>
       </div>
     </div>
@@ -113,6 +156,10 @@ export default {
       filemap: {},
       videoUrl: '',
       imageUrl: '',
+      pdate: '',
+      ptime: '',
+      prviewVisible: false,
+      prviewSrc: '',
       fileList: []
     }
   },
@@ -121,6 +168,22 @@ export default {
     options: Object
   },
   computed: {
+    modules () {
+      return Object.assign({
+        video: {
+          label: '视频'
+        },
+        image: {
+          label: '图片'
+        },
+        emotions: {
+          label: '表情'
+        },
+        time: {
+          label: '定时发'
+        }
+      }, (this.options || {}).modules || {})
+    },
     editor () {
       return Object.assign({
         ref: 'meditor', // 编辑器容器
@@ -167,16 +230,30 @@ export default {
       }
       return rawFile
     },
-    insertImg (file) {
+    insertImg (file, type) {
+      type = type || 'blob'
+      let self = this
       let pic = new Image()
       pic.src = file.url
-      pic.className = 'pic blob-pic blob-' + file.uid
-      pic.alt = file.name
-      this.insertContent(pic)
-
-      this.filemap[file.uid] = file
-      this.$refs['image-popover'].showPopper = false
-      // this.insertContent('<img src="' + file.url + '" class="blob-pic blob-' + file.uid + '" alt="' + file.name + '">')
+      pic.className = 'pic ' + type + '-pic ' + type + '-' + file.uid
+      pic.alt = file.name || ''
+      self.filemap[file.uid] = file
+      pic.onload = _ => {
+        self.insertContent(pic)
+      }
+      pic.onclick = _ => {
+        self.prviewSrc = pic.src
+        self.prviewVisible = true
+      }
+      pic.onerror = _ => {
+        self.$message.error('图片加载出错')
+        throw ('图片加载出错', _)
+      }
+      self.$refs['image-popover'].showPopper = false
+    },
+    timerShow () {
+      // this.pdate = ''
+      // this.ptime = ''
     },
     // 提交消息
     sendMessage (text) {
@@ -195,9 +272,11 @@ export default {
         nodes.forEach((item, index) => {
           if (item.nodeType === 1) { // 元素节点
             if (item.tagName === 'IMG') {
-              list.push('![' + item.alt + '](' + item.src + ')')
+              list.push('![' + (item.alt || 'img') + '](' + item.src + ')')
             } else if (item.tagName === 'A') {
-              list.push('[' + extr(item) + '](' + item.href + ')')
+              list.push('![' + (extr(item) || item.href) + '](' + item.href + ')')
+            } else if (item.tagName === 'VIDEO') {
+              list.push('![' + (item.title || 'video') + '](' + item.src + ')')
             } else {
               block = self.getStyle(item, 'display') === 'block' || item.tagName === 'BR' // 是否要换行
               content = extr(item)
@@ -218,7 +297,7 @@ export default {
       let self = this
       el.childNodes && Array.prototype.slice.apply(el.childNodes).forEach((item, index) => {
         if (item.nodeType === 1) {
-          if (!/^(img|a|div|p|label|span|small|br|hr|h[1-6]|ol|ul|li|dl|dt|dd|i|em)$/i.test(item.tagName)) {
+          if (!/^(img|a|div|p|label|span|small|br|hr|h[1-6]|ol|ul|li|dl|dt|dd|i|em|video)$/i.test(item.tagName)) {
             (item.parentElement || item.parentNode).removeChild(item)
           }
           item.removeAttribute('style')
@@ -228,16 +307,54 @@ export default {
         }
       })
     },
+    addVideo () {
+      let self = this
+      if (self.videoUrl) {
+        if (!self.$RegX.url(self.videoUrl)) {
+          self.$message.error('视频地址有误')
+          return
+        }
+        let file = {
+          controls: true,
+          autoplay: false,
+          src: self.videoUrl
+        }
+        let el = document.createElement('div')
+        let span = document.createElement('span')
+        let video = document.createElement('video')
+        span.innerHTML = '&nbsp;'
+        el.appendChild(video)
+        el.appendChild(span)
+        video.controls = file.controls || false
+        video.autoplay = file.autoplay || false
+        video.src = file.src
+        self.$refs['video-popover'].showPopper = false
+        self.videoUrl = ''
+        self.insertContent(el)
+      }
+    },
+    addImage () {
+      let self = this
+      if (self.imageUrl) {
+        if (!self.$RegX.url(self.imageUrl)) {
+          self.$message.error('图片地址有误')
+          return
+        }
+        self.insertImg({
+          url: self.imageUrl,
+          alt: '',
+          uid: Date.now() + this.tempIndex++
+        }, 'web')
+        self.imageUrl = ''
+        self.$refs['image-popover'].showPopper = false
+      }
+    },
     keyup ($event) {
       let self = this
       if ($event.ctrlKey && $event.key === 'Enter' && self.editor.text !== '') {
         self.sendMessage(self.editor.text)
         self.editor.text = ''
       }
-    },
-    // 鼠标光标
-    inputBlur ($event) {
-      // this.selectionEnd = $event.target.selectionEnd || 0
     },
     inputClick ($event) {
       let selection = window.getSelection ? window.getSelection() : document.selection
@@ -308,8 +425,38 @@ export default {
 </script>
 <style lang="scss">
 $height: 96px;
+.bg-hyaline{
+  background: none;
+  .el-dialog{
+    height: 100%;
+    margin: 0;
+    background: none;
+    pointer-events: none;
+  }
+  .el-dialog__body{
+    pointer-events: none;
+  }
+
+  .el-dialog__body{
+    text-align: center;
+    padding: 0;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    .text-center{
+      display: flex;
+      align-items: center;
+    }
+  }
+  .el-dialog__header{
+    display: none;
+  }
+  .prview{
+    pointer-events: auto;
+  }
+
+}
 .meditor{
-  padding: 8px;
   .editor-context{
     padding: (106 - $height)/2;
 
@@ -324,14 +471,21 @@ $height: 96px;
       margin-top: 3px;
       .iconfont{
         padding: 0px 3px;
-        font-size: 16px;
+        font-size: 12px;
         color: #999;
         cursor: pointer;
+        &:before{
+          padding-right: 3px;
+          font-size: 16px;
+          vertical-align: middle;
+        }
       }
     }
   }
-  .blob-pic{
-    cursor: pointer;
+  .pic{
+    max-width: 500px;
+    cursor: zoom-in;
+    border: 1px solid #f1f1f1;
   }
   .upload-demo{
     display: inline;
