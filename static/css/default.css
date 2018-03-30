@@ -130,3 +130,9 @@ li{
 .icon-delete:before{content:"\E661"}
 .icon-male:before{content:"\E6B3"}
 .icon-female:before{content:"\E6B4"}
+.icon-time:before{content:"\E643"}
+.icon-info:before{content:"\E635"}
+.icon-doubt:before{content:"\E648"}
+.el-input{
+  width: 100%!important;
+}
