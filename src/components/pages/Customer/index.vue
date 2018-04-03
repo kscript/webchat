@@ -189,7 +189,7 @@ export default {
     }
   },
   methods: {
-    selectGroup (vo, index) {
+    selectGroup (vo) {
       console.log(vo)
     },
     getUser (option = {}) {

@@ -113,9 +113,9 @@ export default {
       this.activeLi = index
     },
     formatText (text) {
-      return (text || '').replace(/(\r|\n)/g, (m) => {
+      return (text || '').replace(/(\r|\n)/g, () => {
         return '<br>'
-      }).replace(/\s/g, '&nbsp;').replace(/http:\/\/(.*?)(\b|)$/g, (m) => {
+      }).replace(/\s/g, '&nbsp;').replace(/http:\/\/(.*?)(\b|)$/g, m => {
         return '<a target="_blank" href="' + m + '">' + m + '</a>'
       })
     },

@@ -10,14 +10,13 @@ import store from './store'
 import {regX, wbk} from './utils'
 
 Vue.prototype.$axios = axios
-Vue.prototype.$store = store
 Vue.prototype.$RegX = regX
 
 Vue.use(elementUI)
 
 Vue.prototype.$wbk = wbk
 let eventBus = {
-  install (Vue, options) {
+  install () {
     Vue.prototype.$bus = new Vue({
       data () {
         return {
@@ -35,6 +34,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

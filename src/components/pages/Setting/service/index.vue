@@ -7,7 +7,6 @@
 <script>
 import manage from './manage.vue'
 import assign from './assign.vue'
-
 export default {
   data () {
     return {}
