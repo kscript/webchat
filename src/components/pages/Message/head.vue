@@ -1,10 +1,10 @@
 <template>
   <div class="message-head">
-    <el-row type="flex" :gutter="10">
-      <el-col :span="8">
+    <el-row :gutter="10">
+      <el-col :lg="6" :md="7" :sm="8" :xs="9">
         <el-row type="flex" justify="space-between" :gutter="10">
           <el-col :span="8">
-            <el-select class="full" v-model="status.selected" size="mini">
+            <el-select class="full" v-model="status.selected" size="mini" @change="selectChange">
               <el-option
                 v-for="item in status.list"
                 :key="item.value"
@@ -14,7 +14,7 @@
             </el-select>
           </el-col>
           <el-col :span="8">
-            <el-select class="full" v-model="assign.selected" size="mini">
+            <el-select class="full" v-model="assign.selected" size="mini" @change="selectChange">
               <el-option
                 v-for="item in assign.list"
                 :key="item.value"
@@ -24,7 +24,7 @@
             </el-select>
           </el-col>
           <el-col :span="8">
-            <el-select class="full" v-model="type.selected" size="mini">
+            <el-select class="full" v-model="type.selected" size="mini" @change="selectChange">
               <el-option
                 v-for="item in type.list"
                 :key="item.value"
@@ -35,9 +35,9 @@
           </el-col>
         </el-row>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="15">
         <span class="cust-gutter">
-          <el-radio-group v-model="classify.selected" size="mini">
+          <el-radio-group v-model="classify.selected" size="mini" @change="selectChange">
             <el-radio-button v-for="vo in classify.list" :label="vo.value" :key="vo.value">{{vo.label}}</el-radio-button>
           </el-radio-group>
         </span>
@@ -52,7 +52,7 @@
             inactive-color="#ccc"
             :active-value="1"
             :inactive-value="0"
-            :inactive-text="assign.label">
+            :inactive-text="assign.label" @change="selectChange">
           </el-switch>
         </span>
       </el-col>
@@ -145,6 +145,18 @@ export default {
           }
         ]
       }
+    }
+  },
+  methods: {
+    selectChange () {
+      let self = this
+      self.$emit('filterChange', {
+        status: self.status.selected,
+        type: self.type.selected,
+        classify: self.classify.selected,
+        assign: self.assign.selected,
+        assigned: self.assign.active
+      })
     }
   }
 }

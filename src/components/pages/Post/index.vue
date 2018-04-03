@@ -14,7 +14,7 @@
                 </div>
                 <div class="bd">
                   <div class="note-text clear"><em>有什么新鲜事想告诉大家</em><span class="notice right">可以发布超过<span class="light">140</span>字微博啦</span></div>
-                  <v-editor :emotions="emotions"></v-editor>
+                  <v-editor :options="editOptions" :datas="editDatas"></v-editor>
                 </div>
               </div>
               <div class="box post-sub">
@@ -131,7 +131,20 @@ export default {
           ]
         }
       },
-      emotions: {
+      editOptions: {
+        modules: {
+          emotions: {
+          },
+          image: {
+          },
+          video: {
+          },
+          time: {
+          }
+        }
+      },
+      editDatas: {
+        emotions: {}
       }
     }
   },
@@ -154,7 +167,7 @@ export default {
           category: '默认'
         }
       }).then(response => {
-        self.emotions['default'] = {
+        self.editDatas.emotions['default'] = {
           label: '默认',
           list: response.data.result
         }

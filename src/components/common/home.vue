@@ -43,4 +43,7 @@ body{
 .el-header{
   padding: 0px 0px;
 }
+.el-footer{
+  display: none;
+}
 </style>

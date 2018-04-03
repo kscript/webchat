@@ -10,7 +10,7 @@
                   {{v1.label}}
                 </div>
               </div>
-              <div class="accordion-content">
+              <div class="accordion-content scroll">
                 <div class="handlers" v-for="(v2,i2) in v1.list" :key="i2">
                   <template v-if="v2.type">
 
@@ -21,8 +21,8 @@
                     <template v-else-if="v2.type === 'accordion'">
 
                       <el-collapse v-model="v2.activeName" accordion v-for="(v3,i3) in v2.list" v-if="v2.list" :key="i3" class="collapse-2">
-                        <el-collapse-item :title="v3.label">
-                          <div class="common-list scroll">
+                        <el-collapse-item class="ellipsis" :title="v3.label">
+                          <div class="common-list">
                             <div class="common-item clear" v-for="(v4,i4) in v3.list" v-if="v3.list" :key="i4">
                               <span class="iconfont icon-edit right"></span>
                               <div class="common-text ellipsis">{{v4.text}}</div>
@@ -83,10 +83,10 @@ export default {
               label: '',
               list: [
                 {
-                  label: '10星组',
+                  label: '10星组10星组10星组10星组10星组10星组10星组10星组10星组10星组10星组',
                   list: [
                     {
-                      text: '你好'
+                      text: '你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好'
                     },
                     {
                       text: '你好'
@@ -679,7 +679,7 @@ export default {
               empty: '暂无记录',
               list: [
                 {
-                  label: '记录1'
+                  label: '记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1记录1'
                 },
                 {
                   label: '记录2'
@@ -731,7 +731,7 @@ export default {
     // 'v-accordion': accordion
   },
   props: {
-    users: Array,
+    users: Object,
     detail: Object
   },
   methods: {
@@ -833,7 +833,6 @@ $titleH: 40px;
             padding-top: 0px;
             padding-bottom: 10px;
             .common-list{
-              max-height: 200px;
               overflow-y: auto;
             }
             .common-item{
@@ -857,13 +856,18 @@ $titleH: 40px;
         }
         .el-collapse-item__content{
           padding-top: 5px;
-          padding-bottom: 15px;
+          padding-bottom: 5px;
+          .accordion-content{
+            max-height: 280px;
+          }
           .handlers{
             padding: 10px 10px 0;
             .note-list{
-              line-height: 25px;
-              max-height: 200px;
+              line-height: 18px;
               overflow-y: auto;
+              .node{
+                padding-bottom: 5px;
+              }
             }
           }
         }
