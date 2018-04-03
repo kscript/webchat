@@ -9,17 +9,16 @@ export const regX = new RegX()
 export const wbk = new WebSocket('ws://39.108.171.235:7272')
 
 wbk.onopen = function () {
-  console.log(arguments)
+  // console.log(arguments)
 }
 wbk.onerror = function () {
-  console.log(arguments)
+  // console.log(arguments)
 }
 wbk.onmessage = function () {
-  console.log(arguments)
+  // console.log(arguments)
 }
 wbk.init = function () {
-  let data = {}
-  wbk.send(JSON.stringify(data))
+  wbk.send(localStorage.getItem('user'))
 }
 
 export default {
