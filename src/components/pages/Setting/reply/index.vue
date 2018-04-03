@@ -11,7 +11,6 @@ import follow from './follow.vue'
 import letter from './letter.vue'
 import comment from './comment.vue'
 import link from './link.vue'
-
 export default {
   data () {
     return {}

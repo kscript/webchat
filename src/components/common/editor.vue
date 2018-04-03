@@ -206,7 +206,7 @@ export default {
       }
       this.fileList = fileList
     },
-    uploadExceed (file, fileList) {
+    uploadExceed (file) {
       let rawFile = this.createUrl(file[0])
       if (rawFile) {
         this.fileList.shift()
@@ -239,16 +239,16 @@ export default {
       pic.className = 'pic ' + type + '-pic ' + type + '-' + file.uid
       pic.alt = file.name || ''
       self.filemap[file.uid] = file
-      pic.onload = _ => {
+      pic.onload = () => {
         self.insertContent(pic)
       }
-      pic.onclick = _ => {
+      pic.onclick = () => {
         self.prviewSrc = pic.src
         self.prviewVisible = true
       }
-      pic.onerror = _ => {
+      pic.onerror = err => {
         self.$message.error('图片加载出错')
-        throw ('图片加载出错', _)
+        throw ('图片加载出错', err)
       }
       self.$refs['image-popover'].showPopper = false
     },
@@ -258,17 +258,17 @@ export default {
     },
     // 提交消息
     sendMessage (text) {
-      this.$emit('sendMessage', this.getContent())
+      this.$emit('sendMessage', text || this.getContent())
     },
     getContent (el) {
       let self = this
       return extr(el || self.editor.el)
-      function extr (el) {
+      function extr (ele) {
         let list = []
         let block
         let content // 递归item获取到的内容
-        let nodes = Array.prototype.slice.apply(el.childNodes)
-        nodes.forEach((item, index) => {
+        let nodes = Array.prototype.slice.apply(ele.childNodes)
+        nodes.forEach((item) => {
           if (item.nodeType === 1) { // 元素节点
             if (item.tagName === 'IMG') {
               list.push('![' + (item.alt || 'img') + '](' + item.src + ')')
@@ -294,7 +294,7 @@ export default {
     },
     clearStyle (el) {
       let self = this
-      el.childNodes && Array.prototype.slice.apply(el.childNodes).forEach((item, index) => {
+      el.childNodes && Array.prototype.slice.apply(el.childNodes).forEach((item) => {
         if (item.nodeType === 1) {
           if (!/^(img|a|div|p|label|span|small|br|hr|h[1-6]|ol|ul|li|dl|dt|dd|i|em|video)$/i.test(item.tagName)) {
             (item.parentElement || item.parentNode).removeChild(item)
@@ -357,13 +357,15 @@ export default {
     },
     inputClick ($event) {
       let selection = window.getSelection ? window.getSelection() : document.selection
-      if (!selection.rangeCount) return
+      if (!selection.rangeCount){
+        return
+      }
       this.editor.range = selection.createRange ? selection.createRange() : selection.getRangeAt(0)
       if ($event && /^IMG$/.test($event.target.tagName)) {
       }
     },
-    inputDrop ($event) {
-      this.$nextTick(_ => {
+    inputDrop () {
+      this.$nextTick(() => {
         this.clearStyle(this.editor.el)
       })
     },
@@ -374,8 +376,7 @@ export default {
       let hasR
       let hasRLastChild
       let e
-      if (!range) {
-      }
+
       if (!window.getSelection) {
         range.pasteHTML(str)
         range.collapse(false)

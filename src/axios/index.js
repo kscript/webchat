@@ -8,11 +8,7 @@ let $axios = axios.create({
   baseURL: 'http://api.webchat.com/',
   timeout: 15000,
   transformRequest: [function (data) {
-    if (data instanceof FormData) {
-      return data
-    } else {
-      return qs.stringify(data)
-    }
+    return data instanceof FormData ? data : qs.stringify(data)
   }]
 })
 

@@ -736,7 +736,7 @@ export default {
   },
   methods: {
     handler (v2, i2) {
-
+      console.log(v2, i2)
     }
   }
 }

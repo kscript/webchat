@@ -1,5 +1,5 @@
 export default{
-  v2 (state) {
+  v2 () {
     return localStorage.getItem('v2')
   },
   isAuth (state) {

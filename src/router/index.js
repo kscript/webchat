@@ -103,7 +103,8 @@ router.beforeEach((to, from, next) => {
           path: '/Auth'
         })
       }
-    }).catch(_ => {
+    }).catch(err => {
+      console.log(err)
       next({
         path: '/Auth'
       })

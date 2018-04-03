@@ -111,7 +111,7 @@ export default {
       }).then(response => {
         let list = []
         let result = response.data.result || []
-        result.forEach((item, index) => {
+        result.forEach((item) => {
           list.push(item.user.id)
           self.$set(self.users, item.user.id, item)
         })
