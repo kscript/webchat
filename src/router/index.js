@@ -89,11 +89,12 @@ router.beforeEach((to, from, next) => {
       url: store.getters.v2 + 'weibo_im/user.php',
       method: 'GET'
     }).then(response => {
+      response.data = JSON.parse(localStorage.getItem('token'))
       let token = response.data.result.token
-      console.log(token)
       if (token) {
         store.commit('auth', true)
         store.commit('token', token)
+        store.commit('user', response.data.result)
         next({
           path: '/'
         })

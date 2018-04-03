@@ -4,5 +4,8 @@ export default{
   },
   token (state, val) {
     state.token = val
+  },
+  user (state, val) {
+    state.user = val
   }
 }

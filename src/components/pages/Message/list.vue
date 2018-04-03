@@ -4,38 +4,47 @@
       <div class="scroll-box">
         <div class="scroll">
           <el-table
-          :data="users"
-          :show-header="false" empty-text=" "
+          ref="usersTable"
+          :data="users.list"
+          :show-header="false"
+          empty-text=" "
           @selection-change="selectChange"
           @row-dblclick="handleDblClick">
-            <el-table-column type="selection" width="28" class-name="text-center"></el-table-column>
+            <el-table-column type="selection" width="32" class-name="text-center"></el-table-column>
             <el-table-column
-              prop="user"
               label="">
               <template slot-scope="scope">
                 <el-row type="flex">
                   <el-col :span="3" style="min-width: 60px">
-                    <el-badge :value="scope.row.biz.count" class="item">
-                      <img :src="scope.row.user.profile_image_url" alt="" class="photo">
+                    <el-badge :value="users[scope.row].biz.count" class="item">
+                      <img :src="users[scope.row].user.profile_image_url" alt="" class="photo">
                     </el-badge>
                   </el-col>
                   <el-col :span="16">
-                    <div class="user-name">{{scope.row.user.name}}</div>
-                    <div class="message-time">{{scope.row.biz.updatedAt.slice(0,10)}}</div>
-                    <div class="message-text">{{scope.row.biz.text}}</div>
+                    <div class="user-name">{{users[scope.row].user.name}}</div>
+                    <div class="message-time">{{users[scope.row].biz.updatedAt.slice(0,10)}}</div>
+                    <div class="message-text">{{users[scope.row].biz.text}}</div>
                   </el-col>
                 </el-row>
               </template>
             </el-table-column>
+            <div slot="append"></div>
           </el-table>
         </div>
       </div>
-      <el-pagination
-        class="text-right"
-        small
-        layout="prev, pager, next"
-        :total="page.total">
-      </el-pagination>
+      <el-row class="pagination-box">
+        <el-col :span="8">
+          <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="selectAll">全选/取消</el-checkbox>
+        </el-col>
+        <el-col :span="16">
+          <el-pagination
+          class="text-right"
+          small
+          layout="prev, pager, next"
+          :total="page.total">
+        </el-pagination>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -48,21 +57,43 @@ export default {
         size: 15,
         current: 1
       },
+      isIndeterminate: false,
+      checkAll: false,
       user_select: []
     }
   },
   methods: {
-    selectChange () {
-
+    selectAll () {
+      let self = this
+      let table = self.$refs.usersTable
+      if (!self.checkAll) {
+        table.clearSelection()
+      } else {
+        table.data.forEach(row => {
+          table.toggleRowSelection(row, true)
+        })
+      }
+    },
+    selectChange (rows) {
+      let table = this.$refs.usersTable
+      if (rows.length > 0) {
+        this.checkAll = table.data.length === rows.length
+        this.isIndeterminate = !this.checkAll
+      } else {
+        this.isIndeterminate = false
+        this.checkAll = false
+      }
     },
     handleDblClick (vo) {
       // 清除未读计数器
-      vo.biz.count = 0
+      this.users[vo].biz.count = 0
       this.$emit('selectUser', vo)
     }
   },
+  created () {
+  },
   props: {
-    users: Array
+    users: Object
   }
 }
 </script>
@@ -108,8 +139,9 @@ export default {
       height: 40px;
       border-radius: 5px;
     }
-    .el-pagination{
+    .pagination-box{
       padding: 8px;
+      margin-bottom: 10px;
     }
   }
 }

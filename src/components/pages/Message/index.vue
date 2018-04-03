@@ -1,9 +1,9 @@
 <template>
   <div class="message">
-    <v-messagehead></v-messagehead>
+    <v-messagehead @filterChange="filterChange"></v-messagehead>
     <div class="message-main cust-fix">
       <v-messagelist :users="users" @selectUser="selectUser"></v-messagelist>
-      <v-messagedetail :detail="detail" :messages="messages" :emotions="emotions"></v-messagedetail>
+      <v-messagedetail :detail="detail" :messages="messages" :datas="editDatas"></v-messagedetail>
       <v-messagehandle :users="users" :detail="detail"></v-messagehandle>
       <el-dialog :title="dialog.title" :visible.sync="dialog.visible" :width="dialog.width" v-if="dialog">
         <span slot="footer" class="dialog-footer" v-if="dialog.footer.show">
@@ -23,10 +23,14 @@ import messageHandle from './handle.vue'
 export default {
   data () {
     return {
-      users: [],
+      users: { // key: user.id
+        list: [] // user.id
+      },
       messages: [],
       detail: {},
-      emotions: {},
+      editDatas: {
+        emotions: {}
+      },
       dialog: null
     }
   },
@@ -37,6 +41,9 @@ export default {
     'v-messagehandle': messageHandle
   },
   methods: {
+    filterChange (filter) {
+      console.log(filter)
+    },
     setDialog (option) {
       let dialog = {
         title: '',
@@ -57,7 +64,7 @@ export default {
       return option
     },
     selectUser (vo) {
-      this.getMessageList(vo)
+      this.getMessageList(this.users[vo])
     },
     getEmotions () {
       let self = this
@@ -68,7 +75,7 @@ export default {
           category: '默认'
         }
       }).then(response => {
-        self.emotions['default'] = {
+        self.editDatas.emotions['default'] = {
           label: '默认',
           list: response.data.result
         }
@@ -76,22 +83,23 @@ export default {
     },
     getMessageList (vo) {
       let self = this
-      self.detail = vo
-      vo.biz.count = 0
-      self.$axios({
-        url: 'v1/contents',
-        method: 'GET',
-        data: {
-          id: vo.id
-        }
-      }).then(response => {
-        self.messages = response.data.result.reverse()
-      })
+      if (vo || self.users.list.length) {
+        self.detail = vo = vo || self.users[self.users.list[0]]
+        vo.biz.count = 0
+        self.$axios({
+          url: 'v1/contents',
+          method: 'GET',
+          data: {
+            id: vo.id
+          }
+        }).then(response => {
+          self.messages = response.data.result.reverse()
+        })
+      }
     },
     onmessage (message) {
       let data = JSON.parse(message.data)
       if (data) {
-        console.log(data)
         // this.messages.unshift()
       }
     },
@@ -101,8 +109,14 @@ export default {
         url: 'v1/users',
         method: 'GET'
       }).then(response => {
-        self.users = response.data.result
-        self.getMessageList(self.users[0])
+        let list = []
+        let result = response.data.result || []
+        result.forEach((item, index) => {
+          list.push(item.user.id)
+          self.$set(self.users, item.user.id, item)
+        })
+        self.$set(self.users, 'list', list)
+        self.getMessageList()
       })
       self.getEmotions()
     }

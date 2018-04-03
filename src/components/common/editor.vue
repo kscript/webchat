@@ -10,7 +10,7 @@
         trigger="click">
         <template slot-scope="content">
           <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane :label="vo.label" :name="key" v-for="(vo,key) in emotions" :key="key">
+            <el-tab-pane :label="vo.label" :name="key" v-for="(vo,key) in datas.emotions" v-if="datas.emotions" :key="key">
               <template slot="label">
                 {{vo.label}}
               </template>
@@ -164,25 +164,26 @@ export default {
     }
   },
   props: {
-    emotions: Object,
-    options: Object
+    options: Object,
+    datas: Object
   },
   computed: {
     modules () {
-      return Object.assign({
-        video: {
-          label: '视频'
-        },
-        image: {
-          label: '图片'
-        },
-        emotions: {
-          label: '表情'
-        },
-        time: {
-          label: '定时发'
-        }
-      }, (this.options || {}).modules || {})
+      // return Object.assign({
+      //   video: {
+      //     label: '视频'
+      //   },
+      //   image: {
+      //     label: '图片'
+      //   },
+      //   emotions: {
+      //     label: '表情'
+      //   },
+      //   time: {
+      //     label: '定时发'
+      //   }
+      // }, (this.options || {}).modules || {})
+      return (this.options || {}).modules || {}
     },
     editor () {
       return Object.assign({
@@ -257,9 +258,7 @@ export default {
     },
     // 提交消息
     sendMessage (text) {
-      text = this.getContent()
-      console.log(text)
-      this.$emit('sendMessage', text)
+      this.$emit('sendMessage', this.getContent())
     },
     getContent (el) {
       let self = this
@@ -485,7 +484,7 @@ $height: 96px;
   .pic{
     max-width: 500px;
     cursor: zoom-in;
-    border: 1px solid #f1f1f1;
+    border: 1px solid #fefefe;
   }
   .upload-demo{
     display: inline;

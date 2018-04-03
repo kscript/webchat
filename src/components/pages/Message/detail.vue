@@ -9,11 +9,32 @@
                   <img :src="detail.user.profile_image_url" alt="" class="photo">
                 </el-badge>
               </el-col>
-              <el-col :span="16">
-                <div class="user-name">
-                  {{detail.user.name}}
-                  <span class="iconfont" :class="detail.user.gender === 'm' ? 'icon-male':'icon-female'"></span>
-                </div>
+              <el-col :span="23">
+                <el-row>
+                  <el-col :span="16">
+                    <div class="user-name">
+                      {{detail.user.name}}
+                      <span class="iconfont" :class="detail.user.gender === 'm' ? 'icon-male':'icon-female'"></span>
+                    </div>
+                  </el-col>
+                  <el-col :span="8">
+                    <div class="icon-list text-right">
+                      <el-tooltip content="收藏客户" placement="bottom" :open-delay="300">
+                        <span class="iconfont icon-favorite" @click="iconHandler('favorite')"></span>
+                      </el-tooltip>
+                      <el-tooltip content="去微博发私信" placement="bottom" :open-delay="300">
+                        <a :href="'//weibo.com/u/' + detail.user.id" target="_blank"><span class="iconfont icon-letter"></span>&nbsp;</a>
+                      </el-tooltip>
+                      <el-tooltip content="结束对话" placement="bottom" :open-delay="300">
+                        <span class="iconfont icon-close" @click="iconHandler('close')"></span>
+                      </el-tooltip>
+                      <el-tooltip content="垃圾箱" placement="bottom" :open-delay="300">
+                        <span class="iconfont icon-delete" @click="iconHandler('delete')"></span>
+                      </el-tooltip>
+                    </div>
+                  </el-col>
+                </el-row>
+
                 <div class="user-info">
                   <span class="info-item"><span class="nums">{{detail.user.followers_count}}</span> <span class="text">粉丝</span></span>
                   <span class="info-item"><span class="nums">{{detail.user.friends_count}}</span> <span class="text">关注</span></span>
@@ -21,22 +42,7 @@
                   <span class="info-item"><span class="iconfont icon-position"></span> <span class="text">{{(detail.user.location||'').split(' ')[0]}}</span></span>
                 </div>
               </el-col>
-              <el-col :span="6">
-                <div class="icon-list text-right">
-                  <el-tooltip content="收藏客户" placement="bottom" :open-delay="300">
-                    <span class="iconfont icon-favorite" @click="iconHandler('favorite')"></span>
-                  </el-tooltip>
-                  <el-tooltip content="去微博发私信" placement="bottom" :open-delay="300">
-                    <span class="iconfont icon-letter" @click="iconHandler('letter')"></span>
-                  </el-tooltip>
-                  <el-tooltip content="结束对话" placement="bottom" :open-delay="300">
-                    <span class="iconfont icon-close" @click="iconHandler('close')"></span>
-                  </el-tooltip>
-                  <el-tooltip content="垃圾箱" placement="bottom" :open-delay="300">
-                    <span class="iconfont icon-delete" @click="iconHandler('delete')"></span>
-                  </el-tooltip>
-                </div>
-              </el-col>
+
             </el-row>
         </div>
         <div class="scroll-box cust-fix">
@@ -69,7 +75,7 @@
         </div>
         <div class="editor-box cust-fix">
           <div class="editor-padding">
-            <v-editor :emotions="emotions" @sendMessage="sendMessage" :options="conf"></v-editor>
+            <v-editor @sendMessage="sendMessage" :options="conf" :datas="datas"></v-editor>
           </div>
         </div>
       </el-card>
@@ -78,17 +84,26 @@
 </template>
 <script>
 import editor from '../../common/editor.vue'
+import store from '../../../store'
 export default {
   data () {
     return {
       activeLi: -1,
-      conf: {}
+      user: {},
+      conf: {
+        modules: {
+          emotions: {
+          },
+          image: {
+          }
+        }
+      }
     }
   },
   props: {
+    datas: Object,
     detail: Object,
-    messages: Array,
-    emotions: Object
+    messages: Array
   },
   components: {
     'v-editor': editor
@@ -101,22 +116,33 @@ export default {
       return (text || '').replace(/(\r|\n)/g, (m) => {
         return '<br>'
       }).replace(/\s/g, '&nbsp;').replace(/http:\/\/(.*?)(\b|)$/g, (m) => {
-        return '<a href="' + m + '">' + m + '</a>'
+        return '<a target="_blank" href="' + m + '">' + m + '</a>'
       })
     },
     iconHandler (type) {
-
+      switch (type) {
+        case 'follow':
+          break
+        case 'letter':
+          break
+        case 'close':
+          break
+        case 'delete':
+          break
+        default:
+      }
     },
     sendMessage (text) {
       console.log(text)
     }
   },
   created () {
+    this.user = store.state.user
   }
 }
 </script>
 <style lang="scss">
-$editB: 80px;
+$editB: 50px;
 $editH: 150px;
 $editMT: 8px;
 
@@ -126,14 +152,14 @@ $editMT: 8px;
   margin-left: 25%;
   z-index: 130;
   .el-card__header{
-    padding: 12px 15px;
+    padding: 12px 10px;
   }
 }
 .message-card .card-box{
   height: 100%;
   border-top: none;
   border-bottom: none;
-  border-right: 1px solid #e4e7ed;
+  /*border-right: 1px solid #e4e7ed;*/
   border-radius: 0;
   box-shadow: none;
   padding-left: 15px;
@@ -162,10 +188,13 @@ $editMT: 8px;
     font-size: 12px;
     color: #666;
     .info-item{
-      padding: 0px 12px;
+      padding: 0px 10px;
       border-right: 2px solid #f2f2f2;
       &:first-child{
         padding-left: 0;
+      }
+      &:last-child{
+        border-right: none;
       }
       .nums{
         font-weight: 700;
@@ -184,9 +213,10 @@ $editMT: 8px;
     top: 188px;
     bottom: $editB + $editH + $editMT;
     width: 50%;
-    margin-left: -55px;
+    left: 25%;
+    padding: 0 10px;
+    box-sizing: border-box;
     .scroll{
-      padding-left: 25px;
       height: 100%;
       overflow-y: auto;
       overflow-x: hidden;
@@ -198,12 +228,15 @@ $editMT: 8px;
   .editor-box{
     width: 50%;
     height: $editH;
-    bottom: $editB;
-    top: auto;
+    padding: 1px;
     margin-left: -36px;
     border-top: 1px solid #e4e7ed;
+    box-sizing: border-box;
+    bottom: $editB;
+    top: auto;
     .editor-padding{
       padding: 6px;
+      background: #fff;
     }
   }
   .icon-list{
@@ -212,7 +245,10 @@ $editMT: 8px;
       font-size: 14px;
       color: #6bbc64;
       cursor: pointer;
-      padding: 1px 5px;
+      padding: 1px 3px;
+      &:focus{
+        outline: none!important;
+      }
     }
   }
 }

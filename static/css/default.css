@@ -55,6 +55,9 @@ li{
 }
 
 /* chrome滚动条 */
+.scroll{
+  overflow-y: auto;
+}
 .scroll::-webkit-scrollbar {
   width:5px;
 }
