@@ -29,6 +29,33 @@ exports.cssLoaders = function (options) {
       sourceMap: options.sourceMap
     }
   }
+  // 2018-04-02 add
+  function resolveResouce(name) {
+      return path.resolve(__dirname, '../static/scss/' + name);
+  }
+  function generateSassResourceLoader() {
+      var loaders = [
+        cssLoader,
+        // 'postcss-loader',
+        'sass-loader',
+        {
+            loader: 'sass-resources-loader',
+            options: {
+              // it need a absolute path
+              resources: [resolveResouce('mixin.scss')]
+            }
+        }
+      ];
+      if (options.extract) {
+         return ExtractTextPlugin.extract({
+          use: loaders,
+          fallback: 'vue-style-loader'
+        })
+      } else {
+        return ['vue-style-loader'].concat(loaders)
+      }
+  }
+  // add end
 
   // generate loader string to be used with extract text plugin
   function generateLoaders (loader, loaderOptions) {
@@ -57,15 +84,18 @@ exports.cssLoaders = function (options) {
   }
 
   // https://vue-loader.vuejs.org/en/configurations/extract-css.html
-  return {
+  var res = {
     css: generateLoaders(),
     postcss: generateLoaders(),
     less: generateLoaders('less'),
+    // sass: generateSassResourceLoader(),
+    // scss: generateSassResourceLoader(),
     sass: generateLoaders('sass', { indentedSyntax: true }),
     scss: generateLoaders('sass'),
     stylus: generateLoaders('stylus'),
     styl: generateLoaders('stylus')
   }
+  return res
 }
 
 // Generate loaders for standalone style files (outside of .vue)

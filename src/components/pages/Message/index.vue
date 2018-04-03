@@ -88,6 +88,13 @@ export default {
         self.messages = response.data.result.reverse()
       })
     },
+    onmessage (message) {
+      let data = JSON.parse(message.data)
+      if (data) {
+        console.log(data)
+        // this.messages.unshift()
+      }
+    },
     init () {
       let self = this
       self.$axios({
@@ -101,9 +108,13 @@ export default {
     }
   },
   created () {
-    this.init()
-    this.setDialog()
-    window.vm = this
+    let self = this
+    self.init()
+    self.setDialog()
+    self.$wbk.readyState < 1 && self.$wbk.close()
+    self.$wbk.init()
+    self.$wbk.onmessage = self.onmessage
+    window.vm = self
   }
 }
 </script>

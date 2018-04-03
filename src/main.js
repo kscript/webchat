@@ -16,7 +16,6 @@ Vue.prototype.$RegX = regX
 Vue.use(elementUI)
 
 Vue.prototype.$wbk = wbk
-
 let eventBus = {
   install (Vue, options) {
     Vue.prototype.$bus = new Vue({

@@ -24,9 +24,6 @@ export default {
     'v-letter': letter,
     'v-comment': comment,
     'v-link': link
-  },
-  created () {
-    console.log(this)
   }
 }
 </script>

@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '../store'
+import axios from '../axios'
 Vue.use(Router)
 
 const router = new Router({
@@ -24,7 +26,7 @@ const router = new Router({
             keep: false,
             name: 'Message',
             type: 'page',
-            requireAuth: false
+            requireAuth: true
           },
           component: resolve => require(['../components/pages/Message/index.vue'], resolve)
         },
@@ -35,7 +37,7 @@ const router = new Router({
             keep: false,
             name: 'Post',
             type: 'page',
-            requireAuth: false
+            requireAuth: true
           },
           component: resolve => require(['../components/pages/Post/index.vue'], resolve)
         },
@@ -46,7 +48,7 @@ const router = new Router({
             keep: false,
             name: 'Setting',
             type: 'page',
-            requireAuth: false
+            requireAuth: true
           },
           component: resolve => require(['../components/pages/Setting/index.vue'], resolve)
         },
@@ -57,18 +59,54 @@ const router = new Router({
             keep: false,
             name: 'Customer',
             type: 'page',
-            requireAuth: false
+            requireAuth: true
           },
           component: resolve => require(['../components/pages/Customer/index.vue'], resolve)
         }
       ]
+    },
+    {
+      path: '/Auth',
+      name: 'Auth',
+      meta: {
+        keep: false,
+        name: 'Auth',
+        type: 'Auth',
+        requireAuth: false
+      },
+      component: resolve => require(['../components/common/Auth.vue'], resolve)
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  if (1 || to.meta.type === 'index' || !to.meta.requireAuth) {
+  if (!to.meta.requireAuth) {
     next()
+  } else if (store.getters.isAuth) {
+    next()
+  } else {
+    axios({
+      url: store.getters.v2 + 'weibo_im/user.php',
+      method: 'GET'
+    }).then(response => {
+      let token = response.data.result.token
+      console.log(token)
+      if (token) {
+        store.commit('auth', true)
+        store.commit('token', token)
+        next({
+          path: '/'
+        })
+      } else {
+        next({
+          path: '/Auth'
+        })
+      }
+    }).catch(_ => {
+      next({
+        path: '/Auth'
+      })
+    })
   }
 })
 
