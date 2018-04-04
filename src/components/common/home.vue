@@ -40,6 +40,9 @@ body{
 .el-main{
   padding: 0px 0px;
 }
+.el-container{
+  padding-left: $asideW;
+}
 .el-header{
   padding: 0px 0px;
 }

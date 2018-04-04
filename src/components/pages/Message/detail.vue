@@ -15,6 +15,7 @@
                     <div class="user-name">
                       {{detail.user.name}}
                       <span class="iconfont" :class="detail.user.gender === 'm' ? 'icon-male':'icon-female'"></span>
+                      <el-button size="mini" class="mini-minus">关注</el-button>
                     </div>
                   </el-col>
                   <el-col :span="8">
@@ -46,36 +47,39 @@
             </el-row>
         </div>
         <div class="scroll-box cust-fix">
-          <div class=" scroll">
+          <div class="scroll">
             <ul class="content-list">
-            <li class="li-item clear" v-for="(vo, index) in messages" :key="vo.id" :data-id="vo.accountId" :data-uid="vo.user.id" v-if="messages.length" :class="{'is-self':vo.accountId == vo.user.id,active: index === activeLi}" @click="clickLi(index)">
-              <div class="identity">
-                <div class="message-time" v-if="vo.message && vo.message.createdAt">{{(vo.message.createdAt||'').slice(0,10)}}</div>
-                <div class="is-messages" v-if="vo.type === 'messages'">
-                  <template v-if="vo.message">
-                    <div class="is-text" v-if="vo.message.type === 'text'">
-                      <span class="content-text" v-html="formatText(vo.message.text)"></span>
-                    </div>
-                    <div class="is-position" v-else-if="vo.message.type === 'position'">
-                      <span class="content-text" v-html="formatText(vo.message.text)"></span>
-                    </div>
-                  </template>
+              <li class="li-item clear" v-for="(vo, index) in messages" :key="vo.id" :data-id="vo.accountId" :data-uid="vo.user.id" v-if="messages.length" :class="{'is-self':vo.accountId == vo.user.id,active: index === activeLi}" @click="clickLi(index)">
+                <div class="identity">
+                  <div class="is-messages message-item" v-if="vo.type === 'messages'">
+                    <div class="message-time" v-if="vo.message && vo.message.createdAt">{{(vo.message.createdAt||'').slice(0,10)}}</div>
+                    <template v-if="vo.message">
+                      <div class="is-text type-box" v-if="vo.message.type === 'text'">
+                        <span class="content-text" v-html="formatText(vo.message.text)"></span>
+                        <span class="message-type">私信</span>
+                      </div>
+                      <div class="is-position type-box" v-else-if="vo.message.type === 'position'">
+                        <span class="content-text" v-html="formatText(vo.message.text)"></span>
+                      </div>
+                    </template>
+                  </div>
+                  <div class="is-comments message-item" v-else-if="vo.type === 'comments'">
+                    <template v-if="vo.status">
+                      <div class="message-time" v-if="vo.message && vo.message.createdAt">{{(vo.message.createdAt||'').slice(0,10)}}</div>
+                      <div class="is-status type-box">
+                        <span class="content-text" v-html="formatText(vo.status.text)"></span>
+                        <span class="message-type">评论</span>
+                      </div>
+                    </template>
+                  </div>
                 </div>
-                <div class="is-comments" v-else-if="vo.type === 'comments'">
-                  <template v-if="vo.status">
-                    <div class="is-status">
-                      <span v-html="formatText(vo.status.text)"></span>
-                    </div>
-                  </template>
-                </div>
-              </div>
-            </li>
-          </ul>
+              </li>
+            </ul>
           </div>
         </div>
         <div class="editor-box cust-fix">
           <div class="editor-padding">
-            <v-editor @sendMessage="sendMessage" :options="conf" :datas="datas"></v-editor>
+            <v-editor @sendMessage="sendMessage" :options="editOptions"></v-editor>
           </div>
         </div>
       </el-card>
@@ -90,7 +94,8 @@ export default {
     return {
       activeLi: -1,
       user: {},
-      conf: {
+      editOptions: {
+        confirmButtonText: '发私信',
         modules: {
           emotions: {
           },
@@ -101,7 +106,6 @@ export default {
     }
   },
   props: {
-    datas: Object,
     detail: Object,
     messages: Array
   },
@@ -182,6 +186,9 @@ $editMT: 8px;
       color: #6bbc64;
       font-weight: 600;
     }
+    .mini-minus{
+      padding: 3px 10px;
+    }
   }
   .user-info{
     padding-top: 10px;
@@ -213,7 +220,8 @@ $editMT: 8px;
     top: 188px;
     bottom: $editB + $editH + $editMT;
     width: 50%;
-    left: 25%;
+    /*left: 25%;*/
+    margin-left: -$asideW / 2;
     padding: 0 10px;
     box-sizing: border-box;
     .scroll{
@@ -255,68 +263,91 @@ $editMT: 8px;
 
 .content-list{
   padding: 10px;
-}
-.content-list .li-item{
-  padding: 15px 10px 20px;
-  border-left: 2px solid transparent;
-}
-.content-list .li-item .identity{
-  text-align: left;
-}
-.content-list .li-item.is-self .identity{
-  text-align: right;
-}
-.content-list .li-item.active:not(.is-self){
-  border-left: 2px solid #6bbc64;
-  background-color: #fafafa;
-}
-.content-list .li-item:not(.is-self):hover{
-  border-left: 2px solid #6bbc64;
-  background-color: #fafafa;
-}
-.content-list .message-time{
-  font-size: 12px;
-  line-height: 34px;
-  padding-left: 6px;
+  .li-item{
+    padding: 15px 10px 20px;
+    border-left: 2px solid transparent;
+    &.is-self .identity{
+      text-align: right;
+    }
+    &.active:not(.is-self){
+      border-left: 2px solid #6bbc64;
+      background-color: #fafafa;
+    }
+    &:not(.is-self):hover{
+      border-left: 2px solid #6bbc64;
+      background-color: #fafafa;
+    }
+    &.is-self{
+      .identity{
+        .content-text:before{
+          left: auto;
+          right: -6px;
+          border-left: 6px solid #e6f8e9;
+          border-right: none;
+        }
+        .message-type{
+          display: none;
+        }
+      }
+    }
+    .identity{
+      text-align: left;
+      .message-time{
+        font-size: 12px;
+        line-height: 34px;
+        padding-left: 6px;
+      }
+      .message-item{
+        .type-box{
+          position: relative;
+          .message-type{
+            position: absolute;
+            left: auto;
+            top: 50%;
+            margin-top: -6px;
+            margin-left: 8px;
+            font-size: 12px;
+          }
+        }
+        &.is-comments{
+          .content-text{
+            width: 75%;
+            font-size: 12px;
+            color: #999;
+            background: #e6f8e9;
+          }
+        }
+      }
+      .content-text{
+        padding: 10px 20px;
+        font-size: 12px;
+        background: #e6f8e9;
+        border-radius: 3px;
+        position: relative;
+        margin-left: 6px;
+        line-height: 22px;
+        display: inline-block;
+        max-width: 75%;
+
+        &:before{
+          width: 0;
+          height: 0;
+          content: " ";
+          position: absolute;
+          top: 50%;
+          border-right: 6px solid #e6f8e9;
+          border-bottom: 6px solid transparent;
+          border-top: 6px solid transparent;
+          left: -6px;
+          background: transparent;
+          margin-top: -6px;
+        }
+      }
+    }
+  }
+  a{
+    color: #6bbc64;
+  }
 }
 
-.content-text{
-  padding: 10px 20px;
-  font-size: 12px;
-  background: #e6f8e9;
-  border-radius: 3px;
-  position: relative;
-  margin-left: 6px;
-  line-height: 24px;
-  display: inline-block;
-}
-.content-text:before{
-  width: 0;
-  height: 0;
-  content: " ";
-  position: absolute;
-  top: 50%;
-  border-right: 6px solid #e6f8e9;
-  border-bottom: 6px solid transparent;
-  border-top: 6px solid transparent;
-  left: -6px;
-  background: transparent;
-  margin-top: -6px;
-}
-.is-self .content-text:before{
-  left: auto;
-  right: -6px;
-  border-left: 6px solid #e6f8e9;
-  border-right: none;
-}
-.content-list a{
-  color: #6bbc64;
-}
-.content-list .is-comments{
-  padding: 15px;
-  font-size: 12px;
-  color: #999;
-  background: #e6f8e9;
-  border-radius: 5px;
-}
 </style>

@@ -95,9 +95,7 @@ router.beforeEach((to, from, next) => {
         store.commit('auth', true)
         store.commit('token', token)
         store.commit('user', response.data.result)
-        next({
-          path: '/'
-        })
+        next()
       } else {
         next({
           path: '/Auth'

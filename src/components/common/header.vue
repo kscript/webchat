@@ -1,6 +1,6 @@
 <template>
-  <el-header height="40px" class="bg-white">
-    <el-tabs v-model="tabs.activeName" @tab-click="handleClick" class="tabs-small">
+  <el-header height="45px" class="bg-white tabs-small">
+    <el-tabs v-model="tabs.activeName" @tab-click="handleClick">
       <el-tab-pane :label="vo.label" :key="vo.name" :name="vo.name" v-for="vo in tabs.list">
         <template slot="label">
           <div class="tab-toggle">{{vo.label}}</div>
@@ -49,14 +49,29 @@ export default {
   }
 }
 </script>
-<style>
-.tabs-small .el-tabs__item{
-  padding: 0px 15px;
-}
-.tabs-small .tab-toggle{
-  padding: 0 10px;
-}
-.tabs-small .el-tabs__nav-wrap::after{
-  height: 1px;
+<style lang="scss">
+
+.tabs-small{
+  height: $headH;
+  .el-tabs__item{
+    padding: 0px 15px;
+  }
+  .tab-toggle{
+    padding: 2px 15px;
+  }
+  .el-tabs__header{
+    .el-tabs__nav{
+      height: $headH;
+    }
+    .el-tabs__nav-scroll{
+      padding-left: 15px;
+    }
+  }
+  .el-tabs__nav-wrap{
+    height: $headH;
+    &::after{
+      height: 1px;
+    }
+  }
 }
 </style>

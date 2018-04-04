@@ -136,6 +136,8 @@ li{
 .icon-time:before{content:"\E643"}
 .icon-info:before{content:"\E635"}
 .icon-doubt:before{content:"\E648"}
+.icon-topic:before{content:"\E6A4"}
+.icon-circle{border-radius: 50%;border: 2px solid #ccc;}
 .el-input{
   width: 100%!important;
 }

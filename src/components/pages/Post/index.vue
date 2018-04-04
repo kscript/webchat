@@ -13,8 +13,18 @@
                   </div>
                 </div>
                 <div class="bd">
-                  <div class="note-text clear"><em>有什么新鲜事想告诉大家</em><span class="notice right">可以发布超过<span class="light">140</span>字微博啦</span></div>
-                  <v-editor :options="editOptions" :datas="editDatas"></v-editor>
+                  <div class="note-text clear">
+                    <em>有什么新鲜事想告诉大家</em>
+                    <span class="notice right">
+                      <template v-if="inputLength<0">
+                        可以发布超过<span class="light">140</span>字微博啦
+                      </template>
+                      <template v-else>
+                        已输入 <span class="num">{{inputLength}}</span> 字
+                      </template>
+                    </span>
+                  </div>
+                  <v-editor :options="editOptions" :datas="editDatas" @inputChange="editInputChange"></v-editor>
                 </div>
               </div>
               <div class="box post-sub">
@@ -54,8 +64,8 @@
                         </el-select>
                       </el-col>
                       <el-col :span="4">
-                        <el-select v-model="letter.status.selected" size="mini" :placeholder="letter.status.empty">
-                          <el-option :value="vo.value" :key="vo.value" :label="vo.label" v-for="vo in letter.status.list" :disabled="vo.disabled === undefined ? false : true"></el-option>
+                        <el-select v-model="letter.assign.selected" size="mini" :placeholder="letter.assign.empty">
+                          <el-option :value="vo.value" :key="vo.value" :label="vo.label" v-for="vo in letter.assign.list" :disabled="vo.disabled === undefined ? false : true"></el-option>
                         </el-select>
                       </el-col>
                       <el-col :span="4">
@@ -100,6 +110,7 @@ export default {
     return {
       activePageName: 'publishWeibo',
       activeTabName: 'published',
+      inputLength: -1,
       accounts: [
         {
           text: '客服群发测试',
@@ -115,11 +126,11 @@ export default {
           selected: '',
           empty: '处理状态',
           list: [
-            {
-              value: 0,
-              disabled: true,
-              label: '处理状态'
-            },
+            // {
+            //   value: 0,
+            //   disabled: true,
+            //   label: '处理状态'
+            // },
             {
               value: 1,
               label: '未处理'
@@ -129,18 +140,35 @@ export default {
               label: '已处理'
             }
           ]
+        },
+        assign: {
+          selected: '',
+          empty: '指派人',
+          list: [
+            // {
+            //   value: 0,
+            //   disabled: true,
+            //   label: '指派人'
+            // },
+            {
+              value: 1,
+              label: '全部指派'
+            },
+            {
+              value: 2,
+              label: '我的'
+            }
+          ]
         }
       },
       editOptions: {
+        elType: 'textarea',
         modules: {
-          emotions: {
-          },
-          image: {
-          },
-          video: {
-          },
-          time: {
-          }
+          emotions: {},
+          image: {},
+          video: {},
+          time: {},
+          topic:{}
         }
       },
       editDatas: {
@@ -157,6 +185,9 @@ export default {
     },
     handleTabClick () {
 
+    },
+    editInputChange (len) {
+      this.inputLength = len === 0 ? -1 : len
     },
     getEmotions () {
       let self = this

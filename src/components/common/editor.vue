@@ -1,6 +1,7 @@
 <template>
-  <div class="meditor">
+  <div class="meditor" :class="'is-' + editOption.mode">
     <div class="editor-context rel">
+      <!-- 表情 -->
       <el-popover
         popper-class="emoji-list no-outline"
         ref="emotions-popover"
@@ -25,45 +26,84 @@
           </el-tabs>
         </template>
       </el-popover>
+      <!-- 图片 -->
       <el-popover
-        popper-class="video-list no-outline"
+        :popper-class="'image-list no-outline is-' + editOption.mode"
         ref="image-popover"
         placement="top"
         title=""
         width="320"
         trigger="click">
         <template slot-scope="content">
-          <el-tabs>
-            <el-tab-pane>
-              <template slot="label">本地图片</template>
-              <el-upload
-                class="upload-demo"
-                action=""
-                accept="image/*"
-                :show-file-list="false"
-                :auto-upload="false"
-                :limit="1"
-                :file-list="fileList"
-                :on-change="uploadChange"
-                :on-exceed="uploadExceed">
-                <el-button size="mini">上传</el-button>
-              </el-upload>
-            </el-tab-pane>
-            <el-tab-pane>
-              <template slot="label">网络图片</template>
-              <el-row>
-                <el-col :span="3" style="min-width: 40px; line-height: 28px;">url:</el-col>
-                <el-col :span="16">
-                  <el-input size="mini" v-model="imageUrl"></el-input>
-                </el-col>
-                <el-col :span="4">
-                  <el-button size="mini" style="margin-left: 10px;" @click="addImage">确定</el-button>
-                </el-col>
-              </el-row>
-            </el-tab-pane>
-          </el-tabs>
+          <!-- 是否与文本混合 -->
+          <template v-if="editOption.mode === 'mix'">
+            <el-tabs>
+              <el-tab-pane>
+                <template slot="label">本地图片</template>
+                <el-upload
+                  class="upload-demo"
+                  action=""
+                  accept="image/*"
+                  :show-file-list="false"
+                  :auto-upload="false"
+                  :limit="1"
+                  :file-list="fileList"
+                  :on-change="uploadChange"
+                  :on-exceed="uploadExceed">
+                  <el-button size="mini">上传</el-button>
+                </el-upload>
+              </el-tab-pane>
+              <el-tab-pane>
+                <template slot="label">网络图片</template>
+                <el-row>
+                  <el-col :span="3" style="min-width: 40px; line-height: 28px;">url:</el-col>
+                  <el-col :span="16">
+                    <el-input size="mini" v-model="imageUrl"></el-input>
+                  </el-col>
+                  <el-col :span="4">
+                    <el-button size="mini" style="margin-left: 10px;" @click="addImage">确定</el-button>
+                  </el-col>
+                </el-row>
+              </el-tab-pane>
+            </el-tabs>
+          </template>
+          <template v-else>
+            <el-upload
+              class="editor-picture-card"
+              :class="pictureCardExceed?'isExceed':''"
+              list-type="picture-card"
+              action=""
+              accept="image/*"
+              show-file-list
+              :auto-upload="false"
+              :limit="9"
+              :on-preview="handlePictureCardPreview"
+              :on-remove="handlePictureCardRemove"
+              :on-change="handlePictureCardChange">
+              <i class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </template>
         </template>
       </el-popover>
+      <!-- 查看图片1 -->
+      <el-dialog :visible.sync="editDialogVisible" :width="editDialogImageWidth">
+        <img width="100%" :src="editDialogImageUrl" alt="">
+      </el-dialog>
+      <!-- 查看图片2 -->
+      <el-dialog
+        title="查看原图"
+        class="bg-hyaline is-fullscreen"
+        width="100%"
+        top="0"
+        :visible.sync="prviewVisible"
+        append-to-body
+        center>
+        <div class="text-center">
+          <!-- <h4>查看原图</h4> -->
+          <img :src="prviewSrc" alt="" class="prview">
+        </div>
+      </el-dialog>
+      <!-- 视频 -->
       <el-popover
         popper-class="video-list no-outline"
         ref="video-popover"
@@ -83,14 +123,14 @@
           </el-row>
         </template>
       </el-popover>
+      <!-- 定时发 -->
       <el-popover
-        popper-class="video-list no-outline"
+        popper-class="time-list no-outline"
         ref="time-popover"
         placement="top"
         title=""
         width="360"
-        trigger="click"
-        @show="timerShow">
+        trigger="click">
         <template slot-scope="content">
           <el-row :gutter="5">
             <el-col :span="9">
@@ -113,33 +153,25 @@
           </el-row>
         </template>
       </el-popover>
-      <el-dialog
-        title="查看原图"
-        class="bg-hyaline is-fullscreen"
-        width="100%"
-        top="0"
-        :visible.sync="prviewVisible"
-        append-to-body
-        center>
-        <div class="text-center">
-          <!-- <h4>查看原图</h4> -->
-          <img :src="prviewSrc" alt="" class="prview">
-        </div>
-      </el-dialog>
+
       <div class="el-textarea">
         <div class="meditor-el el-textarea__inner editor-text scroll"
+          v-if="editOption.elType === 'div'"
           contenteditable="true"
           ref="meditor"
-          :style="'overflow-y: auto; height: ' + editor.height + 'px'"
+          :style="'overflow-y: auto; height: ' + editOption.height + 'px'"
           @click="inputClick"
-          @drop="inputDrop">
+          @drop="inputDrop"
+          @input="inputChange">
         </div>
+        <el-input ref="meditor" type="textarea" v-else @input="inputChange" v-model="editorContent" :rows="editOption.rows"></el-input>
         <div class="editor-icon">
-            <span class="iconfont icon-smile" v-if="modules.emotions" v-popover:emotions-popover>{{modules.emotions.label}}</span>
-            <span class="iconfont icon-pictrue" v-if="modules.image" v-popover:image-popover>{{modules.image.label}}</span>
-            <span class="iconfont icon-video" v-if="modules.video" v-popover:video-popover>{{modules.video.label}}</span>
-            <span class="iconfont icon-time" v-if="modules.time" v-popover:time-popover>{{modules.time.label}}</span>
-            <el-button class="right" size="mini" type="success" @click="sendMessage">发私信</el-button>
+            <span class="iconfont icon-smile" v-if="modules.emotions" v-popover:emotions-popover>{{getLabel('emotions')}}</span>
+            <span class="iconfont icon-pictrue" :class="{'selected': (editOption.mode === 'mix' ? fileList : pictureCardList).length > 0}" v-if="modules.image" v-popover:image-popover>{{getLabel('image')}}</span>
+            <span class="iconfont icon-video" :class="{'selected': editOption.mode === 'mount' && videoUrl !== ''}" v-if="modules.video" v-popover:video-popover>{{getLabel('video')}}</span>
+            <span class="iconfont icon-time" v-if="modules.time" v-popover:time-popover>{{getLabel('time')}}</span>
+            <span class="iconfont icon-topic" v-if="modules.topic" @click="insertTopic">{{getLabel('topic')}}</span>
+            <el-button v-if="editOption.showConfirmButton" class="right" size="mini" type="success" @click="sendMessage">{{editOption.confirmButtonText}}</el-button>
         </div>
       </div>
     </div>
@@ -149,6 +181,11 @@
 export default {
   data () {
     return {
+      pictureCardExceed: false,
+      editDialogVisible: false,
+      editDialogImageUrl: '',
+      editDialogImageWidth: '',
+      pictureCardList: [],
       activeName: 'default',
       selectionEnd: 0,
       range: null,
@@ -158,45 +195,87 @@ export default {
       imageUrl: '',
       pdate: '',
       ptime: '',
+      editorContent: '',
       prviewVisible: false,
       prviewSrc: '',
+      editOption: {},
+      datas: {
+        emotions: {}
+      },
+      defaultOption: {
+        confirmButtonText: '发送',
+        showConfirmButton: true,
+        label: true, // 是否有label文本
+        mode: 'mount', // 模式 mount / mix
+        maxImgLength: 9, //最大图片数
+        elType: 'div', // 编辑器容器类型 div textarea
+        height: 120, // div高度
+        rows: 3, // textarea 高度
+        modules: { // 模块配置
+          video: {
+            label: '视频'
+          },
+          image: {
+            label: '图片'
+          },
+          emotions: {
+            label: '表情'
+          },
+          time: {
+            label: '定时发'
+          },
+          topic: {
+            label: '话题'
+          }
+        }
+      },
       fileList: []
     }
   },
   props: {
-    options: Object,
-    datas: Object
+    options: Object
   },
   computed: {
     modules () {
-      // return Object.assign({
-      //   video: {
-      //     label: '视频'
-      //   },
-      //   image: {
-      //     label: '图片'
-      //   },
-      //   emotions: {
-      //     label: '表情'
-      //   },
-      //   time: {
-      //     label: '定时发'
-      //   }
-      // }, (this.options || {}).modules || {})
       return (this.options || {}).modules || {}
+    },
+    editOptionComputed () {
+      let options = Object.assign(this.$copy(this.defaultOption),this.options || {})
+      return options
     },
     editor () {
       return Object.assign({
         ref: 'meditor', // 编辑器容器
         text: '',
         html: '',
-        height: 120,
         range: null,
         selection: null
       }, {})
     }
   },
   methods: {
+    getLabel (module) {
+      if (!this.editOption.label) {
+        return ''
+      }
+      return this.options.modules[module].label || this.defaultOption.modules[module].label
+    },
+    handlePictureCardPreview(file) {
+      let img = new Image()
+      let self = this
+      img.onload = () => {
+        self.editDialogImageWidth = (img.naturalWidth || img.width) + 'px'
+        self.editDialogVisible = true
+      }
+      img.src = self.editDialogImageUrl = file.url
+    },
+    handlePictureCardRemove () {
+      this.pictureCardExceed = false
+    },
+    handlePictureCardChange (file, fileList) {
+      this.pictureCardList = fileList
+      this.pictureCardExceed = fileList.length >= this.editOption.maxImgLength
+    },
     // 图片上传相关
     uploadChange (file, fileList) {
       let type = ['delete', 'change', 'add'][fileList.length - this.fileList.length + 1]
@@ -231,6 +310,9 @@ export default {
       }
       return rawFile
     },
+    insertTopic () {
+      this.insertContent('#在这里输入你想要说的话题# ')
+    },
     insertImg (file, type) {
       type = type || 'blob'
       let self = this
@@ -252,10 +334,6 @@ export default {
       }
       self.$refs['image-popover'].showPopper = false
     },
-    timerShow () {
-      // this.pdate = ''
-      // this.ptime = ''
-    },
     // 提交消息
     sendMessage (text) {
       this.$emit('sendMessage', text || this.getContent())
@@ -271,11 +349,11 @@ export default {
         nodes.forEach((item) => {
           if (item.nodeType === 1) { // 元素节点
             if (item.tagName === 'IMG') {
-              list.push('![' + (item.alt || 'img') + '](' + item.src + ')')
+              list.push('![' + (item.alt || 'img') + ']{img:' + encodeURI(item.src) + '}')
             } else if (item.tagName === 'A') {
-              list.push('![' + (extr(item) || item.href) + '](' + item.href + ')')
+              list.push('![' + (extr(item) || item.href) + ']{link:' + encodeURI(item.href) + '}')
             } else if (item.tagName === 'VIDEO') {
-              list.push('![' + (item.title || 'video') + '](' + item.src + ')')
+              list.push('![' + (item.title || 'video') + ']{video:' + encodeURI(item.src) + '}')
             } else {
               block = self.getStyle(item, 'display') === 'block' || item.tagName === 'BR' // 是否要换行
               content = extr(item)
@@ -399,6 +477,7 @@ export default {
         selection.removeAllRanges()
         selection.addRange(range)
         selection.empty()
+        self.inputChange()
       }
     },
     selectEmoji (emoji) {
@@ -406,6 +485,40 @@ export default {
       this.$refs['emotions-popover'].showPopper = false
     },
     handleClick () {
+    },
+    inputChange () {
+      let content = this.editOption.elType === 'div' ? this.getContent() : this.editorContent
+      this.$emit('inputChange',this.getLength(content))
+    },
+    // 获取输入字符的长度
+    getLength (s) {
+      if (!s) {
+        return 0
+      }
+      let t = s.replace(/!\[(.*?)\]\{(img|link|video)(.*?)\}/g, '')
+      return (t.match(/[\u0256-\uffff]/g)||[]).length + Math.ceil(t.length / 2)
+    },
+    getEmotions () {
+      let self = this
+      let emotions = {}
+      if (self.$store.state.emotions) {
+        self.datas.emotions = self.$store.state.emotions
+      } else {
+        self.$axios({
+          url: 'v1/emotions',
+          method: 'GET',
+          data: {
+            category: '默认'
+          }
+        }).then(response => {
+          emotions['default'] = {
+            label: '默认',
+            list: response.data.result
+          }
+          self.datas.emotions = emotions
+          self.$store.commit('emotions', emotions)
+        })
+      }
     },
     init () {
       let self = this
@@ -415,6 +528,8 @@ export default {
         self.inputClick()
         self.$refs['meditor'].blur()
       })
+      self.getEmotions()
+      self.editOption = self.editOptionComputed
     }
   },
   created () {
@@ -425,6 +540,7 @@ export default {
 </script>
 <style lang="scss">
 $height: 96px;
+$height2: 88px;
 .bg-hyaline{
   background: none;
   .el-dialog{
@@ -479,6 +595,12 @@ $height: 96px;
           font-size: 16px;
           vertical-align: middle;
         }
+        &:focus{
+          outline: none;
+        }
+        &.selected{
+          color: $color;
+        }
       }
     }
   }
@@ -519,6 +641,38 @@ $height: 96px;
       height: 22px;
       cursor: pointer;
     }
+  }
+}
+.image-list.is-mount{
+  width: ($height2 + 8) * 3!important;
+}
+.editor-picture-card{
+  .el-upload-list{
+    .el-upload-list__item{
+      width: $height2;
+      height: $height2;
+      max-width: $height2;
+      padding: 8px;
+      &:hover{
+        border-style: dashed;
+      }
+    }
+    .el-upload-list__item-actions{
+      left: 8px;
+      top: 8px;
+      width: $height2 - 8 * 2;
+      height: $height2 - 8 * 2;
+    }
+  }
+  &.isExceed{
+    .el-upload--picture-card{
+      display: none;
+    }
+  }
+  .el-upload--picture-card{
+    width: $height2;
+    height: $height2;
+    line-height: $height2;
   }
 }
 </style>

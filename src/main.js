@@ -7,10 +7,11 @@ import elementUI from 'element-ui'
 // import websocket from 'websocket'
 import axios from './axios'
 import store from './store'
-import {regX, wbk} from './utils'
+import {regX, wbk, copy} from './utils'
 
 Vue.prototype.$axios = axios
 Vue.prototype.$RegX = regX
+Vue.prototype.$copy = copy
 
 Vue.use(elementUI)
 

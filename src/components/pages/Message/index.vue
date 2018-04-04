@@ -3,7 +3,7 @@
     <v-messagehead @filterChange="filterChange"></v-messagehead>
     <div class="message-main cust-fix">
       <v-messagelist :users="users" @selectUser="selectUser"></v-messagelist>
-      <v-messagedetail :detail="detail" :messages="messages" :datas="editDatas"></v-messagedetail>
+      <v-messagedetail :detail="detail" :messages="messages"></v-messagedetail>
       <v-messagehandle :users="users" :detail="detail"></v-messagehandle>
       <el-dialog :title="dialog.title" :visible.sync="dialog.visible" :width="dialog.width" v-if="dialog">
         <span slot="footer" class="dialog-footer" v-if="dialog.footer.show">
@@ -28,9 +28,6 @@ export default {
       },
       messages: [],
       detail: {},
-      editDatas: {
-        emotions: {}
-      },
       dialog: null
     }
   },
@@ -65,21 +62,6 @@ export default {
     },
     selectUser (vo) {
       this.getMessageList(this.users[vo])
-    },
-    getEmotions () {
-      let self = this
-      self.$axios({
-        url: 'v1/emotions',
-        method: 'GET',
-        data: {
-          category: '默认'
-        }
-      }).then(response => {
-        self.editDatas.emotions['default'] = {
-          label: '默认',
-          list: response.data.result
-        }
-      })
     },
     getMessageList (vo) {
       let self = this
@@ -118,7 +100,6 @@ export default {
         self.$set(self.users, 'list', list)
         self.getMessageList()
       })
-      self.getEmotions()
     }
   },
   created () {
