@@ -6,6 +6,13 @@ RegX.prototype.url = function (url) {
 }
 
 export const regX = new RegX()
+export const copy = function (source) {
+  try {
+    return JSON.parse(JSON.stringify(source))
+  } catch (e) {
+    return Object.assign({}, source)
+  }
+}
 export const wbk = new WebSocket('ws://39.108.171.235:7272')
 
 wbk.onopen = function () {

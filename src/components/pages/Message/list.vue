@@ -41,7 +41,8 @@
           class="text-right"
           small
           layout="prev, pager, next"
-          :total="page.total">
+          :total="page.total"
+          @current-change="pageChange">
         </el-pagination>
         </el-col>
       </el-row>
@@ -63,6 +64,11 @@ export default {
     }
   },
   methods: {
+    pageChange () {
+      let self = this
+      self.checkAll = false
+      self.selectAll()
+    },
     selectAll () {
       let self = this
       let table = self.$refs.usersTable

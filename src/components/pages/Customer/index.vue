@@ -225,11 +225,12 @@ export default {
 }
 </script>
 <style lang="scss">
+$leftW: 240px;
 .customer{
   .layout-left{
-    width: 220px;
+    width: $leftW;
     padding-top: 20px;
-    top: 40px;
+    top: $headH;
     left: auto;
     bottom: 0;
     z-index: 10;
@@ -254,8 +255,8 @@ export default {
   }
   .layout-right{
     position: fixed;
-    top: 40px;
-    left: 220px;
+    top: $headH;
+    left: $leftW + $asideW;
     right: 0;
     bottom: 0;
     z-index: 9;
@@ -266,8 +267,8 @@ export default {
     }
     .hd{
       position: fixed;
-      top: 40px;
-      left: 220px;
+      top: $headH;
+      left: $leftW + $asideW;
       right: 0;
       z-index: 9;
       padding: 15px 20px;
@@ -287,12 +288,15 @@ export default {
     .el-pagination{
       position: fixed;
       bottom: 0;
-      left: 220px;
+      left: $leftW;
       right: 0;
       z-index: 9;
       height: 30px;
       padding: 15px 20px;
       background-color: #fff;
+      .el-pagination__editor.el-input{
+        width: 50px!important;
+      }
     }
     .user-name{
       font-size: 14px;
